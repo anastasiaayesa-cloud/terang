@@ -24,14 +24,15 @@ class KepegawaiansIndex extends Component
    public function render()
 {
     $kepegawaians = Kepegawaian::query()
-        ->with(['pangkat', 'instansi', 'bank', 'pendidikan']) // penting kalau dipakai di blade
-        ->when($this->search, function ($query) {
-            $query->where(function ($q) {
-                $q->where('kepegawaians.nama', 'like', '%' . $this->search . '%')
-                  ->orWhere('kepegawaians.nip', 'like', '%' . $this->search . '%');
-            });
-        })
-        ->orderBy('pegawai_id', 'desc')
+        // ini relasi
+        // ->with(['pangkat', 'instansi', 'bank', 'pendidikan']) // penting kalau dipakai di blade
+        // ->when($this->search, function ($query) {
+        //     $query->where(function ($q) {
+        //         $q->where('kepegawaians.nama', 'like', '%' . $this->search . '%')
+        //           ->orWhere('kepegawaians.nip', 'like', '%' . $this->search . '%');
+        //     });
+        // })
+        ->orderBy('id', 'desc')
         ->paginate(5);
 
     return view('livewire.kepegawaians.kepegawaians-index', compact('kepegawaians'))

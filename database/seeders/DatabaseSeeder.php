@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        \App\Models\Kepegawaian::factory(50)->create();
     }
 }

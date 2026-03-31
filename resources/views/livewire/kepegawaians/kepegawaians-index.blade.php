@@ -46,7 +46,7 @@
                         <tbody>
                             @forelse ($kepegawaians as $kepegawaian)
                                 <tr>
-                                    <td class="px-4 py-2 border">{{ $kepegawaian->pegawai_id }}</td>
+                                    <td class="px-4 py-2 border">{{ $kepegawaian->id }}</td>
                                     <td class="px-4 py-2 border">{{ $kepegawaian->nama }}</td>
                                     <td class="px-4 py-2 border">{{ $kepegawaian->nip }}</td>
                                     <td class="px-4 py-2 border">{{ $kepegawaian->hp }}</td>
