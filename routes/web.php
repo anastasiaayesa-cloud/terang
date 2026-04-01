@@ -10,6 +10,8 @@ use App\Livewire\Kepegawaians\KepegawaiansForm;
 use App\Livewire\Kepegawaians\KepegawaiansIndex;
 use App\Livewire\Perencanaans\PerencanaanForm;
 use App\Livewire\Perencanaans\PerencanaansIndex;
+use App\Livewire\Usulans\UsulansForm;
+use App\Livewire\Usulans\UsulansIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -57,6 +59,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', PerencanaansIndex::class)->name('index');
         Route::get('/create', PerencanaanForm::class)->name('create');
         Route::get('/{perencanaan}/edit', PerencanaanForm::class)->name('edit');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | USULAN
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('usulans')->name('usulans.')->group(function () {
+        Route::get('/', UsulansIndex::class)->name('index');
+        Route::get('/create', UsulansForm::class)->name('create');
+        Route::get('/{usulan}/edit', UsulansForm::class)->name('edit');
     });
 
     Route::prefix('instansis')->name('instansis.')->group(function () {

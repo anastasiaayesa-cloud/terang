@@ -4,11 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pangkat;
-use App\Models\Instansi;
-use App\Models\Bank;
-use App\Models\Pendidikan;
-use App\Models\User;
 
 class Kepegawaian extends Model
 {
@@ -17,8 +12,10 @@ class Kepegawaian extends Model
     protected $table = 'kepegawaians';
 
     // Primary key custom
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'pegawai_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected $fillable = [
@@ -88,6 +85,11 @@ class Kepegawaian extends Model
     // {
     //     return $this->belongsTo(User::class, 'user_id');
     // }
+
+    public function usulans()
+    {
+        return $this->hasMany(Usulan::class, 'pegawai_id');
+    }
 
     // /*
     // |--------------------------------------------------------------------------
