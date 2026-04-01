@@ -12,7 +12,7 @@ class Kepegawaian extends Model
     protected $table = 'kepegawaians';
 
     // Primary key custom
-    protected $primaryKey = 'pegawai_id';
+    protected $primaryKey = 'id';
 
     public $incrementing = true;
 
@@ -53,7 +53,7 @@ class Kepegawaian extends Model
     |--------------------------------------------------------------------------
     */
 
-    //pangkat_id → pangkats.id
+    // pangkat_id → pangkats.id
     public function pangkat()
     {
         return $this->belongsTo(Pangkat::class);
@@ -77,9 +77,6 @@ class Kepegawaian extends Model
         return $this->belongsTo(Pendidikan::class);
     }
 
-    
-
-
     // // user_id → users.id
     // public function user()
     // {
@@ -88,7 +85,7 @@ class Kepegawaian extends Model
 
     public function usulans()
     {
-        return $this->hasMany(Usulan::class, 'pegawai_id');
+        return $this->hasMany(Usulan::class, 'pegawai_id', 'id');
     }
 
     // /*

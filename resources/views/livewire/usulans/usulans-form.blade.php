@@ -23,7 +23,7 @@
                                 <select wire:model="pegawai_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                                     <option value="">-- Pilih Pegawai --</option>
                                     @foreach ($pegawaiList as $pegawai)
-                                        <option value="{{ $pegawai->pegawai_id }}">{{ $pegawai->nama }}</option>
+                                        <option value="{{ $pegawai->id }}">{{ $pegawai->nama }}</option>
                                     @endforeach
                                 </select>
                                 @error('pegawai_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

@@ -25,6 +25,6 @@ class Usulan extends Model
 
     public function kepegawaian()
     {
-        return $this->belongsTo(Kepegawaian::class, 'pegawai_id');
+        return $this->belongsTo(Kepegawaian::class, 'pegawai_id', 'id');
     }
 }

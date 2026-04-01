@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('usulans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pegawai_id')->constrained('kepegawaians', 'pegawai_id')->cascadeOnDelete();
+            $table->unsignedBigInteger('pegawai_id');
+            $table->foreign('pegawai_id')->references('id')->on('kepegawaians')->cascadeOnDelete();
             $table->string('nama_kegiatan');
             $table->date('tanggal_kegiatan');
             $table->string('lokasi_kegiatan');
