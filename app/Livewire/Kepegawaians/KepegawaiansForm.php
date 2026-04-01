@@ -72,7 +72,7 @@ class KepegawaiansForm extends Component
             'instansi_id' => 'nullable|string',
             'hp' => 'nullable|string|max:255',
 
-            'email' => 'required|email|max:255|unique:kepegawaians,email,' . ($this->kepegawaian->pegawai_id ?? 'NULL') . ',pegawai_id',
+            'email' => 'required|email|max:255|unique:kepegawaians,email,' . ($this->kepegawaian->id ?? 'NULL') . ',id',
 
             'npwp' => 'nullable|string|max:255',
 

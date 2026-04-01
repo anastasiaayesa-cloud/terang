@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-// 🔥 import semua relasi
 class Kepegawaian extends Model
 {
     use HasFactory;
@@ -44,9 +43,9 @@ class Kepegawaian extends Model
     | CASTING (BIAR RAPI & AMAN)
     |--------------------------------------------------------------------------
     */
-    protected $casts = [
-        'is_bpmp' => 'boolean',
-    ];
+    // protected $casts = [
+    //     'is_bpmp' => 'boolean',
+    // ];
 
     /*
     |--------------------------------------------------------------------------
@@ -55,48 +54,48 @@ class Kepegawaian extends Model
     */
 
     // pangkat_id → pangkats.id
-    public function pangkat()
-    {
-        return $this->belongsTo(Pangkat::class, 'pangkat_id');
-    }
+    // public function pangkat()
+    // {
+    //     return $this->belongsTo(Pangkat::class, 'pangkat_id');
+    // }
 
-    // instansi_id → instansis.id
-    public function instansi()
-    {
-        return $this->belongsTo(Instansi::class, 'instansi_id');
-    }
+    // // instansi_id → instansis.id
+    // public function instansi()
+    // {
+    //     return $this->belongsTo(Instansi::class, 'instansi_id');
+    // }
 
-    // bank_id → banks.id
-    public function bank()
-    {
-        return $this->belongsTo(Bank::class, 'bank_id');
-    }
+    // // bank_id → banks.id
+    // public function bank()
+    // {
+    //     return $this->belongsTo(Bank::class, 'bank_id');
+    // }
 
-    // pendidikan_id → pendidikans.id
-    public function pendidikan()
-    {
-        return $this->belongsTo(Pendidikan::class, 'pendidikan_id');
-    }
+    // // pendidikan_id → pendidikans.id
+    // public function pendidikan()
+    // {
+    //     return $this->belongsTo(Pendidikan::class, 'pendidikan_id');
+    // }
 
-    // user_id → users.id
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+    // // user_id → users.id
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'user_id');
+    // }
 
     public function usulans()
     {
         return $this->hasMany(Usulan::class, 'pegawai_id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | ACCESSOR (BIAR ENAK DI BLADE)
-    |--------------------------------------------------------------------------
-    */
+    // /*
+    // |--------------------------------------------------------------------------
+    // | ACCESSOR (BIAR ENAK DI BLADE)
+    // |--------------------------------------------------------------------------
+    // */
 
-    public function getIsBpmpTextAttribute()
-    {
-        return $this->is_bpmp ? 'Ya' : 'Tidak';
-    }
+    // public function getIsBpmpTextAttribute()
+    // {
+    //     return $this->is_bpmp ? 'Ya' : 'Tidak';
+    // }
 }
