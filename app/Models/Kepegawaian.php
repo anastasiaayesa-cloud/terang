@@ -6,12 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 // 🔥 import semua relasi
-use App\Models\Pangkat;
-use App\Models\Instansi;
-use App\Models\Bank;
-use App\Models\Pendidikan;
-use App\Models\User;
-
 class Kepegawaian extends Model
 {
     use HasFactory;
@@ -20,7 +14,9 @@ class Kepegawaian extends Model
 
     // Primary key custom
     protected $primaryKey = 'pegawai_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected $fillable = [
@@ -86,6 +82,11 @@ class Kepegawaian extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function usulans()
+    {
+        return $this->hasMany(Usulan::class, 'pegawai_id');
     }
 
     /*

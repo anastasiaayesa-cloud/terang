@@ -24,6 +24,10 @@
                     <x-nav-link :href="route('dokumen-perencanaans.index')" :active="request()->routeIs('dokumen-perencanaans.*')">
                         {{ __('Dokumen Perencanaan') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('usulans.index')" :active="request()->routeIs('usulans.*')">
+                        {{ __('Usulan') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -102,6 +106,10 @@
 
             <x-responsive-nav-link :href="route('dokumen-perencanaans.index')" :active="request()->routeIs('dokumen-perencanaans.*')">
                 {{ __('Dokumen Perencanaan') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('usulans.index')" :active="request()->routeIs('usulans.*')">
+                {{ __('Usulan') }}
             </x-responsive-nav-link>
         </div>
 
