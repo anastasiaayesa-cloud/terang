@@ -24,10 +24,10 @@ class KepegawaiansForm extends Component
     public function mount($kepegawaian = null)
     {
         // dropdown
-        // $this->pangkatList = Pangkat::orderBy('nama')->get();
+        $this->pangkatList = Pangkat::orderBy('nama')->get();
         // $this->instansiList = Instansi::orderBy('nama_instansi')->get();
-        // $this->bankList = Bank::orderBy('nama')->get();
-        // $this->pendidikanList = Pendidikan::orderBy('nama_pendidikan')->get();
+        $this->bankList = Bank::orderBy('nama')->get();
+        $this->pendidikanList = Pendidikan::orderBy('nama')->get();
 
         // EDIT MODE
         if ($kepegawaian) {

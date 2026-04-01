@@ -1,0 +1,15 @@
+{
+    "agents": ["opencode"],
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": [
+        "livewire/livewire",
+        "spatie/laravel-permission",
+        "barryvdh/laravel-dompdf"
+    ],
+    "sail": false,
+    "skills": [
+        "livewire-development"
+    ]
+}

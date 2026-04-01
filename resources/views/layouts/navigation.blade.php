@@ -25,8 +25,16 @@
                         {{ __('Dokumen Perencanaan') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('perencanaans.index')" :active="request()->routeIs('perencanaans.*')">
+                        {{ __('Perencanaan') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('usulans.index')" :active="request()->routeIs('usulans.*')">
                         {{ __('Usulan') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('instansis.index')" :active="request()->routeIs('instansis.*')">
+                        {{ __('Instansi') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -108,8 +116,16 @@
                 {{ __('Dokumen Perencanaan') }}
             </x-responsive-nav-link>
 
+            <x-responsive-nav-link :href="route('perencanaans.index')" :active="request()->routeIs('perencanaans.*')">
+                {{ __('Perencanaan') }}
+            </x-responsive-nav-link>
+
             <x-responsive-nav-link :href="route('usulans.index')" :active="request()->routeIs('usulans.*')">
                 {{ __('Usulan') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('instansis.index')" :active="request()->routeIs('instansis.*')">
+                {{ __('Instansi') }}
             </x-responsive-nav-link>
         </div>
 

@@ -41,7 +41,7 @@ class UsulansForm extends Component
     public function rules()
     {
         return [
-            'pegawai_id' => 'required|exists:kepegawaians,pegawai_id',
+            'pegawai_id' => 'required|exists:kepegawaians,id',
             'nama_kegiatan' => 'required|string|max:255',
             'tanggal_kegiatan' => 'required|date',
             'lokasi_kegiatan' => 'required|string|max:255',
