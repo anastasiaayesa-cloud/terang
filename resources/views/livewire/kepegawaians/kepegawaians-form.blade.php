@@ -144,7 +144,7 @@
                         <select wire:model.defer="pendidikan_id" class="w-full border rounded px-3 py-2">
                             <option value="">-- Pilih --</option>
                             @foreach ($pendidikanList as $pendidikan)
-                                <option value="{{ $pendidikan->id }}">{{ $pendidikan->nama_pendidikan }}</option>
+                                <option value="{{ $pendidikan->id }}">{{ $pendidikan->nama }}</option>
                             @endforeach
                         </select>
                     </div>

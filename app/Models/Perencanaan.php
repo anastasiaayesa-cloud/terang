@@ -7,18 +7,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DokumenPerencanaan extends Model
+class Perencanaan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nama',
+        'kode',
+        'nama_komponen',
         'file_pdf',
-        'tanggal',
     ];
 
-    public function perencanaans()
+    public function dokumenPerencanaan()
     {
-        return $this->hasMany(Perencanaan::class, 'file_pdf');
+        return $this->belongsTo(DokumenPerencanaan::class, 'file_pdf');
     }
 }

@@ -25,13 +25,13 @@ class KepegawaiansIndex extends Component
 {
     $kepegawaians = Kepegawaian::query()
         // ini relasi
-        // ->with(['pangkat', 'instansi', 'bank', 'pendidikan']) // penting kalau dipakai di blade
-        // ->when($this->search, function ($query) {
-        //     $query->where(function ($q) {
-        //         $q->where('kepegawaians.nama', 'like', '%' . $this->search . '%')
-        //           ->orWhere('kepegawaians.nip', 'like', '%' . $this->search . '%');
-        //     });
-        // })
+        ->with(['pangkat', 'bank', 'pendidikan']) // penting kalau dipakai di blade (belum tambah instansi)
+        ->when($this->search, function ($query) {
+            $query->where(function ($q) {
+                $q->where('kepegawaians.nama', 'like', '%' . $this->search . '%')
+                  ->orWhere('kepegawaians.nip', 'like', '%' . $this->search . '%');
+            });
+        })
         ->orderBy('id', 'desc')
         ->paginate(5);
 

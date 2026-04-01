@@ -46,9 +46,9 @@ class Kepegawaian extends Model
     | CASTING (BIAR RAPI & AMAN)
     |--------------------------------------------------------------------------
     */
-    // protected $casts = [
-    //     'is_bpmp' => 'boolean',
-    // ];
+    protected $casts = [
+        'is_bpmp' => 'boolean',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -56,11 +56,11 @@ class Kepegawaian extends Model
     |--------------------------------------------------------------------------
     */
 
-    // pangkat_id → pangkats.id
-    // public function pangkat()
-    // {
-    //     return $this->belongsTo(Pangkat::class, 'pangkat_id');
-    // }
+    //pangkat_id → pangkats.id
+    public function pangkat()
+    {
+        return $this->belongsTo(Pangkat::class);
+    }
 
     // // instansi_id → instansis.id
     // public function instansi()
@@ -68,17 +68,20 @@ class Kepegawaian extends Model
     //     return $this->belongsTo(Instansi::class, 'instansi_id');
     // }
 
-    // // bank_id → banks.id
-    // public function bank()
-    // {
-    //     return $this->belongsTo(Bank::class, 'bank_id');
-    // }
+    // bank_id → banks.id
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class);
+    }
 
-    // // pendidikan_id → pendidikans.id
-    // public function pendidikan()
-    // {
-    //     return $this->belongsTo(Pendidikan::class, 'pendidikan_id');
-    // }
+    // pendidikan_id → pendidikans.id
+    public function pendidikan()
+    {
+        return $this->belongsTo(Pendidikan::class);
+    }
+
+    
+
 
     // // user_id → users.id
     // public function user()

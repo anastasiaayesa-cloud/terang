@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kepegawaians', function (Blueprint $table) {
-    $table->bigIncrements('pegawai_id');
+    $table->bigIncrements('id');
 
     $table->string('nama')->nullable();
     $table->string('nip')->nullable()->unique();
@@ -42,11 +42,11 @@ return new class extends Migration
     $table->timestamps();
 
     // Foreign Keys
-    // $table->foreign('pangkat_id')->references('id')->on('pangkats')->nullOnDelete();
-    // $table->foreign('instansi_id')->references('id')->on('instansis')->nullOnDelete();
-    // $table->foreign('bank_id')->references('id')->on('banks')->nullOnDelete();
-    // $table->foreign('pendidikan_id')->references('id')->on('pendidikans')->nullOnDelete();
-    // $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
+    $table->foreign('pangkat_id')->references('id')->on('pangkats')->nullOnDelete();
+    $table->foreign('instansi_id')->references('id')->on('instansis')->nullOnDelete();
+    $table->foreign('bank_id')->references('id')->on('banks')->nullOnDelete();
+    $table->foreign('pendidikan_id')->references('id')->on('pendidikans')->nullOnDelete();
+    $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
 });
     }
 
