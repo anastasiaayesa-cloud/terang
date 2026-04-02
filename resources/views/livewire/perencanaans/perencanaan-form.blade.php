@@ -42,8 +42,25 @@
                     </div>
 
                     <div class="mb-4">
+                        <label class="block mb-1 font-medium">Berdasarkan Usulan</label>
+                        <select wire:model.defer="usulan_id"
+                                class="border rounded px-3 py-2 w-full">
+                            <option value="">-- Mandiri (Tidak dari Usulan) --</option>
+                            @foreach ($usulans as $usulan)
+                                <option value="{{ $usulan->id }}">
+                                    {{ $usulan->nama_kegiatan }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('usulan_id')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
                         <label class="block mb-1 font-medium">Dokumen Perencanaan *</label>
-                        <select wire:model.defer="file_pdf"
+                        <select wire:model.defer="dokumen_perencanaan_id"
                                 class="border rounded px-3 py-2 w-full">
                             <option value="">-- Pilih Dokumen --</option>
                             @foreach ($dokumenPerencanaans as $dokumen)
@@ -53,7 +70,7 @@
                             @endforeach
                         </select>
 
-                        @error('file_pdf')
+                        @error('dokumen_perencanaan_id')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>

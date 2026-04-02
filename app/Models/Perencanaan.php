@@ -14,11 +14,17 @@ class Perencanaan extends Model
     protected $fillable = [
         'kode',
         'nama_komponen',
-        'file_pdf',
+        'dokumen_perencanaan_id',
+        'usulan_id',
     ];
 
     public function dokumenPerencanaan()
     {
-        return $this->belongsTo(DokumenPerencanaan::class, 'file_pdf');
+        return $this->belongsTo(DokumenPerencanaan::class, 'dokumen_perencanaan_id');
+    }
+
+    public function usulan()
+    {
+        return $this->belongsTo(Usulan::class);
     }
 }

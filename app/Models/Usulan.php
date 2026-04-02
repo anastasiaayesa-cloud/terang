@@ -27,4 +27,9 @@ class Usulan extends Model
     {
         return $this->belongsTo(Kepegawaian::class, 'pegawai_id', 'id');
     }
+
+    public function perencanaans()
+    {
+        return $this->hasMany(Perencanaan::class);
+    }
 }

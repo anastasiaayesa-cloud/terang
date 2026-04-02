@@ -6,6 +6,7 @@ namespace App\Livewire\Perencanaans;
 
 use App\Models\DokumenPerencanaan;
 use App\Models\Perencanaan;
+use App\Models\Usulan;
 use Livewire\Component;
 
 class PerencanaanForm extends Component
@@ -16,7 +17,9 @@ class PerencanaanForm extends Component
 
     public $nama_komponen;
 
-    public $file_pdf;
+    public $dokumen_perencanaan_id;
+
+    public $usulan_id;
 
     public function mount($perencanaan_id = null)
     {
@@ -26,7 +29,8 @@ class PerencanaanForm extends Component
 
             $this->kode = $perencanaan->kode;
             $this->nama_komponen = $perencanaan->nama_komponen;
-            $this->file_pdf = $perencanaan->file_pdf;
+            $this->dokumen_perencanaan_id = $perencanaan->dokumen_perencanaan_id;
+            $this->usulan_id = $perencanaan->usulan_id;
         }
     }
 
@@ -35,7 +39,8 @@ class PerencanaanForm extends Component
         return [
             'kode' => 'nullable|string|max:255',
             'nama_komponen' => 'required|string|max:255',
-            'file_pdf' => 'required|exists:dokumen_perencanaans,id',
+            'dokumen_perencanaan_id' => 'required|exists:dokumen_perencanaans,id',
+            'usulan_id' => 'nullable|exists:usulans,id',
         ];
     }
 
@@ -49,7 +54,8 @@ class PerencanaanForm extends Component
             $perencanaan->update([
                 'kode' => $this->kode,
                 'nama_komponen' => $this->nama_komponen,
-                'file_pdf' => $this->file_pdf,
+                'dokumen_perencanaan_id' => $this->dokumen_perencanaan_id,
+                'usulan_id' => $this->usulan_id,
             ]);
 
             session()->flash('success', 'Perencanaan berhasil diperbarui.');
@@ -60,7 +66,8 @@ class PerencanaanForm extends Component
         Perencanaan::create([
             'kode' => $this->kode,
             'nama_komponen' => $this->nama_komponen,
-            'file_pdf' => $this->file_pdf,
+            'dokumen_perencanaan_id' => $this->dokumen_perencanaan_id,
+            'usulan_id' => $this->usulan_id,
         ]);
 
         session()->flash('success', 'Perencanaan baru berhasil ditambahkan.');
@@ -71,8 +78,9 @@ class PerencanaanForm extends Component
     public function render()
     {
         $dokumenPerencanaans = DokumenPerencanaan::orderBy('nama', 'asc')->get();
+        $usulans = Usulan::orderBy('nama_kegiatan', 'asc')->get();
 
-        return view('livewire.perencanaans.perencanaan-form', compact('dokumenPerencanaans'))
+        return view('livewire.perencanaans.perencanaan-form', compact('dokumenPerencanaans', 'usulans'))
             ->layout('layouts.app');
     }
 }

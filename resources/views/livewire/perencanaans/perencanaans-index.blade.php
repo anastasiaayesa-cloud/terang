@@ -10,9 +10,18 @@
             <div class="p-6 text-gray-900">
 
                 <div class="flex items-center justify-between mb-4">
-                    <div>
+                    <div class="flex items-center space-x-2">
                         <a href="{{ route('perencanaans.create') }}"
                             class="inline-block px-4 py-2 rounded">Tambah Perencanaan</a>
+
+                        <form wire:submit.prevent="importExcel" class="flex items-center space-x-2">
+                            <input type="file" wire:model="file_excel" accept=".xlsx,.xls,.csv"
+                                class="border rounded px-2 py-1 text-sm">
+                            <button type="submit"
+                                class="bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                Import Excel
+                            </button>
+                        </form>
                     </div>
 
                     <div>
@@ -29,6 +38,15 @@
                     <div class="mb-4 text-red-700">{{ session('error') }}</div>
                 @endif
 
+                <div class="mb-4 text-sm text-gray-500">
+                    <strong>Format Excel:</strong> kolom header harus persis:
+                    <code class="bg-gray-100 px-2 py-1 rounded">kode</code>,
+                    <code class="bg-gray-100 px-2 py-1 rounded">nama_komponen</code>,
+                    <code class="bg-gray-100 px-2 py-1 rounded">dokumen_perencanaan_id</code>,
+                    <code class="bg-gray-100 px-2 py-1 rounded">usulan_id</code>
+                    — baris pertama adalah header.
+                </div>
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full bg-white border">
                         <thead>
@@ -37,6 +55,7 @@
                                 <th class="px-4 py-2 border">Kode</th>
                                 <th class="px-4 py-2 border">Nama Komponen</th>
                                 <th class="px-4 py-2 border">Dokumen</th>
+                                <th class="px-4 py-2 border">Sumber</th>
                                 <th class="px-4 py-2 border">Aksi</th>
                             </tr>
                         </thead>
@@ -50,13 +69,20 @@
                                         {{ $perencanaan->dokumenPerencanaan?->nama ?? '-' }}
                                     </td>
                                     <td class="px-4 py-2 border">
+                                        @if ($perencanaan->usulan)
+                                            <span class="text-blue-600">{{ $perencanaan->usulan->nama_kegiatan }}</span>
+                                        @else
+                                            <span class="text-gray-500">Mandiri</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-2 border">
                                         <a href="{{ route('perencanaans.edit', $perencanaan->id) }}"
                                             class="mr-2 text-blue-600">Edit</a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-4 py-2 border text-center">
+                                    <td colspan="6" class="px-4 py-2 border text-center">
                                         Tidak ada data perencanaan.
                                     </td>
                                 </tr>
