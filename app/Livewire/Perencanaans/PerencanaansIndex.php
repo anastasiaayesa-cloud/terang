@@ -24,7 +24,7 @@ class PerencanaansIndex extends Component
     public function render()
     {
         $perencanaans = Perencanaan::query()
-            ->with('dokumenPerencanaan')
+            ->with(['dokumenPerencanaan', 'buktiPengeluarans', 'usulanPembayarans'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('perencanaans.kode', 'like', '%'.$this->search.'%')

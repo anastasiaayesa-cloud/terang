@@ -21,4 +21,19 @@ class Perencanaan extends Model
     {
         return $this->belongsTo(DokumenPerencanaan::class, 'file_pdf');
     }
+
+    public function laporanKegiatans()
+    {
+        return $this->hasMany(LaporanKegiatan::class);
+    }
+
+    public function buktiPengeluarans()
+    {
+        return $this->hasMany(BuktiPengeluaran::class);
+    }
+
+    public function usulanPembayarans()
+    {
+        return $this->hasMany(UsulanPembayaran::class);
+    }
 }
