@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Livewire\DaftarKegiatans\DaftarKegiatansIndex;
 use App\Livewire\DokumenPerencanaans\DokumenPerencanaanForm;
 use App\Livewire\DokumenPerencanaans\DokumenPerencanaanIndex;
 use App\Livewire\Instansis\InstansisForm;
@@ -72,10 +73,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{usulan}/edit', UsulansForm::class)->name('edit');
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | DAFTAR KEGIATAN
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/daftar-kegiatans', DaftarKegiatansIndex::class)->name('daftar-kegiatans.index');
+
+    /*
+    |--------------------------------------------------------------------------
+    | INSTANSI
+    |--------------------------------------------------------------------------
+    */
     Route::prefix('instansis')->name('instansis.')->group(function () {
         Route::get('/', InstansisIndex::class)->name('index');
         Route::get('/create', InstansisForm::class)->name('create');
-        // Route::get('/{kepegawaian}/edit', KepegawaiansForm::class)->name('edit');
     });
 });
 
