@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\KwitansiController;
 use App\Livewire\BuktiPengeluaransList;
 use App\Livewire\BuktiPengeluaransUpload;
 use App\Livewire\DokumenPerencanaans\DokumenPerencanaanForm;
@@ -12,6 +13,9 @@ use App\Livewire\Kepegawaians\KepegawaiansForm;
 use App\Livewire\Kepegawaians\KepegawaiansIndex;
 use App\Livewire\LaporanKegiatans\LaporanKegiatanForm;
 use App\Livewire\LaporanKegiatans\LaporanKegiatansIndex;
+use App\Livewire\PengajuanPencairanDetail;
+use App\Livewire\PengajuanPencairanForm;
+use App\Livewire\PengajuanPencairansIndex;
 use App\Livewire\Perencanaans\PerencanaanForm;
 use App\Livewire\Perencanaans\PerencanaansIndex;
 use App\Livewire\UsulanPembayaranForm;
@@ -26,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard & Profile
     Route::view('dashboard', 'dashboard')->name('dashboard');
-    Route::get('profile', fn () => 'Profile Page')->name('profile.edit');
+    Route::view('profile', 'profile.edit')->name('profile.edit');
 
     /*
     |--------------------------------------------------------------------------
@@ -34,9 +38,9 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::prefix('kepegawaians')->name('kepegawaians.')->group(function () {
-        Route::get('/', KepegawaiansIndex::class)->name('index');
-        Route::get('/create', KepegawaiansForm::class)->name('create');
-        Route::get('/{kepegawaian}/edit', KepegawaiansForm::class)->name('edit');
+        Route::livewire('/', KepegawaiansIndex::class)->name('index');
+        Route::livewire('/create', KepegawaiansForm::class)->name('create');
+        Route::livewire('/{kepegawaian}/edit', KepegawaiansForm::class)->name('edit');
     });
 
     /*
@@ -91,6 +95,19 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | KEUANGAN - Pengajuan Pencairan Dana
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('keuangan/pengajuan-pencairans')->name('keuangan.pengajuan-pencairans.')->group(function () {
+        Route::get('/', PengajuanPencairansIndex::class)->name('index');
+        Route::get('/create', PengajuanPencairanForm::class)->name('create');
+        Route::get('/{id}', PengajuanPencairanDetail::class)->name('show');
+        Route::get('/{id}/edit', PengajuanPencairanForm::class)->name('edit');
+        Route::get('/{id}/print/{jenis}', KwitansiController::class.'@print')->name('print');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | USULAN
     |--------------------------------------------------------------------------
     */
@@ -103,7 +120,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('instansis')->name('instansis.')->group(function () {
         Route::get('/', InstansisIndex::class)->name('index');
         Route::get('/create', InstansisForm::class)->name('create');
-        // Route::get('/{kepegawaian}/edit', KepegawaiansForm::class)->name('edit');
     });
 
     /*

@@ -57,7 +57,7 @@ class LaporanKegiatanForm extends Component
     public function rules()
     {
         $rules = [
-            'pegawai_id' => 'required|exists:kepegawaians,pegawai_id',
+            'pegawai_id' => 'required|exists:kepegawaians,id',
             'perencanaan_id' => 'required|exists:perencanaans,id',
             'judul_laporan' => 'required|string|max:255',
             'deskripsi_kegiatan' => 'required|string',
