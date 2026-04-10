@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Kepegawaians;
 
+use App\Models\Bank;
 use App\Models\Instansi;
 use App\Models\Kepegawaian;
 use App\Models\Pangkat;
-use App\Models\Bank;
 use App\Models\Pendidikan;
 use Livewire\Component;
 
@@ -13,13 +13,47 @@ class KepegawaiansForm extends Component
 {
     public $kepegawaian;
 
-    public $nama, $nip, $jabatan, $pangkat_id,
-        $tempat_lahir, $tgl_lahir, $jenis_kelamin, $agama,
-        $instansi_id, $pendidikan_id,
-        $hp, $email, $npwp, $bank_id, $no_rek,
-        $is_bpmp, $user_id;
+    public $nama;
 
-    public $pangkatList = [], $instansiList = [], $bankList = [], $pendidikanList = [];
+    public $nip;
+
+    public $jabatan;
+
+    public $pangkat_id;
+
+    public $tempat_lahir;
+
+    public $tgl_lahir;
+
+    public $jenis_kelamin;
+
+    public $agama;
+
+    public $instansi_id;
+
+    public $pendidikan_id;
+
+    public $hp;
+
+    public $email;
+
+    public $npwp;
+
+    public $bank_id;
+
+    public $no_rek;
+
+    public $is_bpmp;
+
+    public $user_id;
+
+    public $pangkatList = [];
+
+    public $instansiList = [];
+
+    public $bankList = [];
+
+    public $pendidikanList = [];
 
     public function mount($kepegawaian = null)
     {
@@ -72,7 +106,7 @@ class KepegawaiansForm extends Component
             'instansi_id' => 'nullable|string',
             'hp' => 'nullable|string|max:255',
 
-            'email' => 'required|email|max:255|unique:kepegawaians,email,' . ($this->kepegawaian->id ?? 'NULL') . ',id',
+            'email' => 'required|email|max:255|unique:kepegawaians,email,'.($this->kepegawaian->id ?? 'NULL').',id',
 
             'npwp' => 'nullable|string|max:255',
 

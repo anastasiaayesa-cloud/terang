@@ -21,21 +21,21 @@ class KepegawaiansIndex extends Component
         $this->resetPage();
     }
 
-   public function render()
-{
-    $kepegawaians = Kepegawaian::query()
-        // ini relasi
-        ->with(['pangkat', 'bank', 'pendidikan']) // penting kalau dipakai di blade (belum tambah instansi)
-        ->when($this->search, function ($query) {
-            $query->where(function ($q) {
-                $q->where('kepegawaians.nama', 'like', '%' . $this->search . '%')
-                  ->orWhere('kepegawaians.nip', 'like', '%' . $this->search . '%');
-            });
-        })
-        ->orderBy('id', 'desc')
-        ->paginate(5);
+    public function render()
+    {
+        $kepegawaians = Kepegawaian::query()
+            // ini relasi
+            ->with(['pangkat', 'bank', 'pendidikan']) // penting kalau dipakai di blade (belum tambah instansi)
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('kepegawaians.nama', 'like', '%'.$this->search.'%')
+                        ->orWhere('kepegawaians.nip', 'like', '%'.$this->search.'%');
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(5);
 
-    return view('livewire.kepegawaians.kepegawaians-index', compact('kepegawaians'))
-        ->layout('layouts.app');
-}
+        return view('livewire.kepegawaians.kepegawaians-index', compact('kepegawaians'))
+            ->layout('layouts.app');
+    }
 }

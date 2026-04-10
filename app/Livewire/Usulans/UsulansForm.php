@@ -1,18 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Usulans;
 
-use App\Models\Kepegawaian;
 use App\Models\Usulan;
 use Livewire\Component;
 
 class UsulansForm extends Component
 {
     public $usulan;
-
-    public $pegawaiList = [];
-
-    public $pegawai_id;
 
     public $nama_kegiatan;
 
@@ -24,12 +21,9 @@ class UsulansForm extends Component
 
     public function mount($usulan = null)
     {
-        $this->pegawaiList = Kepegawaian::orderBy('nama')->get();
-
         if ($usulan) {
             $this->usulan = Usulan::findOrFail($usulan);
             $this->fill($this->usulan->only([
-                'pegawai_id',
                 'nama_kegiatan',
                 'tanggal_kegiatan',
                 'lokasi_kegiatan',
@@ -41,7 +35,6 @@ class UsulansForm extends Component
     public function rules()
     {
         return [
-            'pegawai_id' => 'required|exists:kepegawaians,id',
             'nama_kegiatan' => 'required|string|max:255',
             'tanggal_kegiatan' => 'required|date',
             'lokasi_kegiatan' => 'required|string|max:255',
@@ -57,7 +50,7 @@ class UsulansForm extends Component
             $this->usulan->update($data);
             session()->flash('success', 'Usulan berhasil diupdate.');
         } else {
-            $data['status'] = 'pending';
+            // Status tidak lagi digunakan pada kolom usulan, hilangkan penetapan default
             Usulan::create($data);
             session()->flash('success', 'Usulan berhasil ditambahkan.');
         }
@@ -77,7 +70,7 @@ class UsulansForm extends Component
 
     public function render()
     {
-        return view('livewire.usulans.usulans-form')
-            ->layout('layouts.app');
+        // Render without forcing a specific Livewire layout to avoid environment-specific issues
+        return view('livewire.usulans.usulans-form');
     }
 }

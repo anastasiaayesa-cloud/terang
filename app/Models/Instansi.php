@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Instansi extends Model
 {
@@ -13,7 +13,7 @@ class Instansi extends Model
         'nama',
         'alamat',
         'telp',
-        'kabupaten_id'
+        'kabupaten_id',
     ];
 
     public function kabupaten()

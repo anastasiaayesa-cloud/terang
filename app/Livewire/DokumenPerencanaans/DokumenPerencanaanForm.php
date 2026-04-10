@@ -2,16 +2,24 @@
 
 namespace App\Livewire\DokumenPerencanaans;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\DokumenPerencanaan;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class DokumenPerencanaanForm extends Component
 {
     use WithFileUploads;
 
-    public $dokumenperencanaan_id, $nama, $file_pdf, $tanggal, $existing_pdf;
+    public $dokumenperencanaan_id;
+
+    public $nama;
+
+    public $file_pdf;
+
+    public $tanggal;
+
+    public $existing_pdf;
 
     public function mount($dokumenperencanaan_id = null)
     {
@@ -38,7 +46,7 @@ class DokumenPerencanaanForm extends Component
             // Jika EDIT, file_pdf tidak wajib
             'file_pdf' => $this->dokumenperencanaan_id
                 ? 'nullable|mimes:pdf'
-                : 'required|mimes:pdf'
+                : 'required|mimes:pdf',
         ];
     }
 
@@ -71,6 +79,7 @@ class DokumenPerencanaanForm extends Component
             ]);
 
             session()->flash('success', 'Dokumen berhasil diperbarui.');
+
             return redirect()->route('dokumen-perencanaans.index');
         }
 
@@ -82,6 +91,7 @@ class DokumenPerencanaanForm extends Component
         ]);
 
         session()->flash('success', 'Dokumen baru berhasil ditambahkan.');
+
         return redirect()->route('dokumen-perencanaans.index');
     }
 

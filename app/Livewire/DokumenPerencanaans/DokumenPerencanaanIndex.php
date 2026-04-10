@@ -2,9 +2,9 @@
 
 namespace App\Livewire\DokumenPerencanaans;
 
+use App\Models\DokumenPerencanaan;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\DokumenPerencanaan;
 
 class DokumenPerencanaanIndex extends Component
 {
@@ -23,13 +23,13 @@ class DokumenPerencanaanIndex extends Component
     {
         $dokumenperencanaans = DokumenPerencanaan::query()
             ->when($this->search, function ($query) {
-                $query->where('nama', 'like', '%' . $this->search . '%');
+                $query->where('nama', 'like', '%'.$this->search.'%');
             })
             ->orderBy('id', 'asc')
             ->paginate(5);
 
         return view('livewire.dokumen-perencanaans.dokumen-perencanaan-index', [
-            'dokumenperencanaans' => $dokumenperencanaans
+            'dokumenperencanaans' => $dokumenperencanaans,
         ])->layout('layouts.app');
     }
 }

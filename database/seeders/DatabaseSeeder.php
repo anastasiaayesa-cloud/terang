@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kepegawaian;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,6 +23,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        \App\Models\Kepegawaian::factory(50)->create();
+        Kepegawaian::factory(50)->create();
     }
 }

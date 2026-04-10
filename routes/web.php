@@ -11,6 +11,10 @@ use App\Livewire\Kepegawaians\KepegawaiansForm;
 use App\Livewire\Kepegawaians\KepegawaiansIndex;
 use App\Livewire\Perencanaans\PerencanaanForm;
 use App\Livewire\Perencanaans\PerencanaansIndex;
+use App\Livewire\Persuratans\PersuratansForm;
+use App\Livewire\Persuratans\PersuratansIndex;
+use App\Livewire\UsulanPegawais\UsulanPegawaisForm;
+use App\Livewire\UsulanPegawais\UsulanPegawaisIndex;
 use App\Livewire\Usulans\UsulansForm;
 use App\Livewire\Usulans\UsulansIndex;
 use Illuminate\Support\Facades\Route;
@@ -71,6 +75,28 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', UsulansIndex::class)->name('index');
         Route::get('/create', UsulansForm::class)->name('create');
         Route::get('/{usulan}/edit', UsulansForm::class)->name('edit');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PERSURATAN
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('persuratans')->name('persuratans.')->group(function () {
+        Route::get('/', PersuratansIndex::class)->name('index');
+        Route::get('/create', PersuratansForm::class)->name('create');
+        Route::get('/{persuratan}/edit', PersuratansForm::class)->name('edit');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | USULAN PEGAWAI
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('usulan-pegawais')->name('usulan-pegawais.')->group(function () {
+        Route::get('/', UsulanPegawaisIndex::class)->name('index');
+        Route::get('/create/{usulan_id?}', UsulanPegawaisForm::class)->name('create');
+        Route::get('/{usulanPegawai}/edit', UsulanPegawaisForm::class)->name('edit');
     });
 
     /*

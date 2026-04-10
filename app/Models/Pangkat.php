@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Kepegawaian;
+use Illuminate\Database\Eloquent\Model;
 
 class Pangkat extends Model
 {
@@ -14,6 +13,6 @@ class Pangkat extends Model
 
     public function kepegawaian()
     {
-        return $this->hasMany(kepegawaian::class);
+        return $this->hasMany(Kepegawaian::class);
     }
 }

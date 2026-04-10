@@ -33,6 +33,14 @@
                         {{ __('Usulan') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('usulan-pegawais.index')" :active="request()->routeIs('usulan-pegawais.*')">
+                        {{ __('Usulan Pegawai') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('persuratans.index')" :active="request()->routeIs('persuratans.*')">
+                        {{ __('Persuratan') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('daftar-kegiatans.index')" :active="request()->routeIs('daftar-kegiatans.*')">
                         {{ __('Daftar Kegiatan') }}
                     </x-nav-link>
@@ -126,6 +134,10 @@
 
             <x-responsive-nav-link :href="route('usulans.index')" :active="request()->routeIs('usulans.*')">
                 {{ __('Usulan') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('usulan-pegawais.index')" :active="request()->routeIs('usulan-pegawais.*')">
+                {{ __('Usulan Pegawai') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('daftar-kegiatans.index')" :active="request()->routeIs('daftar-kegiatans.*')">

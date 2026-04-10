@@ -19,17 +19,6 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Pegawai</label>
-                                <select wire:model="pegawai_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                                    <option value="">-- Pilih Pegawai --</option>
-                                    @foreach ($pegawaiList as $pegawai)
-                                        <option value="{{ $pegawai->id }}">{{ $pegawai->nama }}</option>
-                                    @endforeach
-                                </select>
-                                @error('pegawai_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
                                 <label class="block text-sm font-medium text-gray-700">Nama Kegiatan</label>
                                 <input type="text" wire:model="nama_kegiatan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                                 @error('nama_kegiatan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -47,7 +36,7 @@
                                 @error('lokasi_kegiatan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <div class="md:col-span-2">
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
                                 <textarea wire:model="deskripsi" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
                                 @error('deskripsi') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

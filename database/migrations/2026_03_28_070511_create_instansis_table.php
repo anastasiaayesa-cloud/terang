@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('instansis', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string("alamat");
-            $table->string("telp");
-            $table->foreignId('kabupaten_id')->constrained('kabupatens'); 
+            $table->string('alamat');
+            $table->string('telp');
+            $table->foreignId('kabupaten_id')->constrained('kabupatens');
             $table->timestamps();
         });
     }

@@ -88,6 +88,11 @@ class Kepegawaian extends Model
         return $this->hasMany(Usulan::class, 'pegawai_id', 'id');
     }
 
+    public function usulanPegawais()
+    {
+        return $this->hasMany(UsulanPegawai::class, 'pegawai_id');
+    }
+
     // /*
     // |--------------------------------------------------------------------------
     // | ACCESSOR (BIAR ENAK DI BLADE)

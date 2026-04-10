@@ -34,7 +34,7 @@ class KepegawaianFactory extends Factory
                 'Kristen Protestan',
                 'Hindu',
                 'Buddha',
-                'Konghucu'
+                'Konghucu',
             ]),
 
             'instansi_id' => null,

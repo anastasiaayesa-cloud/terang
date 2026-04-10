@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Observers\UsulanObserver;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -14,12 +15,10 @@ class Usulan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'pegawai_id',
         'nama_kegiatan',
         'tanggal_kegiatan',
         'lokasi_kegiatan',
         'deskripsi',
-        'status',
         'catatan',
     ];
 
@@ -32,10 +31,7 @@ class Usulan extends Model
         static::observe(UsulanObserver::class);
     }
 
-    public function kepegawaian()
-    {
-        return $this->belongsTo(Kepegawaian::class, 'pegawai_id', 'id');
-    }
+    // Kolom pegawai_id telah dihapus; relasi kepegawaian telah dihapus demi konsistensi skema baru
 
     public function perencanaans()
     {
@@ -45,5 +41,18 @@ class Usulan extends Model
     public function daftarKegiatan(): MorphOne
     {
         return $this->morphOne(DaftarKegiatan::class, 'sumber');
+    }
+
+    public function usulanPegawais()
+    {
+        return $this->hasMany(UsulanPegawai::class);
+    }
+
+    // Scope: Usulan yang memiliki pegawai dengan status approved
+    public function scopeWithApprovedPegawai(Builder $query): Builder
+    {
+        return $query->whereHas('usulanPegawais', function (Builder $q) {
+            $q->where('status', 'approved');
+        })->distinct();
     }
 }

@@ -6,10 +6,9 @@ use App\Models\Instansi;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-
 class InstansisIndex extends Component
 {
-   use WithPagination;
+    use WithPagination;
 
     public $search = '';
 
@@ -26,8 +25,8 @@ class InstansisIndex extends Component
     {
         $instansis = Instansi::query()
             ->select('instansis.*')
-            ->when($this->search, function ($query) { //searching di search kolom
-                $query->where('instansis.nama', 'like', '%' . $this->search . '%')
+            ->when($this->search, function ($query) { // searching di search kolom
+                $query->where('instansis.nama', 'like', '%'.$this->search.'%')
                     ->orWhere('instansis.alamat', 'like', "%{$this->search}%");
             })
             ->orderBy('id', 'desc')
