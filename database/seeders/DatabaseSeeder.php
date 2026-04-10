@@ -19,9 +19,6 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-<<<<<<< HEAD
-        Kepegawaian::factory(50)->create();
-=======
         $this->call([
             PangkatSeeder::class,
             BankSeeder::class,
@@ -36,6 +33,5 @@ class DatabaseSeeder extends Seeder
         Perencanaan::factory(10)->create();
         LaporanKegiatan::factory(15)->create();
         Usulan::factory(10)->create();
->>>>>>> ddf70700cbfda6130c029c7903fa803fe223054f
     }
 }

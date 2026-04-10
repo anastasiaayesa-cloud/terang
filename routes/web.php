@@ -159,8 +159,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('instansis')->name('instansis.')->group(function () {
         Route::get('/', InstansisIndex::class)->name('index');
         Route::get('/create', InstansisForm::class)->name('create');
-<<<<<<< HEAD
-=======
     });
 
     /*
@@ -172,7 +170,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', LaporanKegiatansIndex::class)->name('index');
         Route::get('/create', LaporanKegiatanForm::class)->name('create');
         Route::get('/{laporanKegiatan}/edit', LaporanKegiatanForm::class)->name('edit');
->>>>>>> ddf70700cbfda6130c029c7903fa803fe223054f
     });
 });
 
