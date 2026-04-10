@@ -48,6 +48,10 @@
                     <x-nav-link :href="route('instansis.index')" :active="request()->routeIs('instansis.*')">
                         {{ __('Instansi') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('laporan-kegiatans.index')" :active="request()->routeIs('laporan-kegiatans.*')">
+                        {{ __('Laporan Kegiatan') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -146,6 +150,10 @@
 
             <x-responsive-nav-link :href="route('instansis.index')" :active="request()->routeIs('instansis.*')">
                 {{ __('Instansi') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('laporan-kegiatans.index')" :active="request()->routeIs('laporan-kegiatans.*')">
+                {{ __('Laporan Kegiatan') }}
             </x-responsive-nav-link>
         </div>
 

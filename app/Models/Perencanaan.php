@@ -39,4 +39,19 @@ class Perencanaan extends Model
     {
         return $this->morphOne(DaftarKegiatan::class, 'sumber');
     }
+
+    public function laporanKegiatans()
+    {
+        return $this->hasMany(LaporanKegiatan::class);
+    }
+
+    public function buktiPengeluarans()
+    {
+        return $this->hasMany(BuktiPengeluaran::class);
+    }
+
+    public function usulanPembayarans()
+    {
+        return $this->hasMany(UsulanPembayaran::class);
+    }
 }

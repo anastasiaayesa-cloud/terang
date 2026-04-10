@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('dokumen_perencanaans', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('file_pdf');
+            $table->string('file_pdf')->nullable();
             $table->date('tanggal');
             $table->timestamps();
         });

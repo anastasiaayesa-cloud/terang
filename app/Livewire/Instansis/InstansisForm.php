@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Instansis;
 
 use App\Models\Instansi;
@@ -10,11 +12,11 @@ class InstansisForm extends Component
 {
     public $instansi_id;
 
-    public $nama_instansi;
+    public $nama;
 
-    public $alamat_instansi;
+    public $alamat;
 
-    public $telp_instansi;
+    public $telp;
 
     public $kabupaten_id;
 
@@ -24,75 +26,56 @@ class InstansisForm extends Component
     {
         $this->kabupatenList = Kabupaten::orderBy('nama')->get();
 
-        // kalau parameter ada (edit mode)
         if ($instansi_id) {
-            // $this->authorize('instansi-edit');
-            $this->id = $instansi_id;
+            $this->instansi_id = $instansi_id;
 
             $instansi = Instansi::findOrFail($instansi_id);
-            $this->nama = $instansi->nama_instansi;
-            $this->alamat = $instansi->alamat_instansi;
-            $this->telp = $instansi->telp_instansi;
+
+            $this->nama = $instansi->nama;
+            $this->alamat = $instansi->alamat;
+            $this->telp = $instansi->telp;
             $this->kabupaten_id = $instansi->kabupaten_id;
-        } else {
-            // $this->authorize('instansi-create');
         }
     }
 
-    public function rules()
+    public function rules(): array
     {
-        $rules = [
+        return [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'telp' => 'required|string|max:255',
             'kabupaten_id' => 'required|exists:kabupatens,id',
-
         ];
-
-        return $rules;
     }
 
     public function submit()
     {
-        if ($this->instansi_id) {
-            $this->authorize('instansi-edit');
-        } else {
-            $this->authorize('instansi-create');
-        }
-
         $this->validate();
 
-        // setelah lulus validasi, lakukan sintaks dibawah
+        $data = [
+            'nama' => $this->nama,
+            'alamat' => $this->alamat,
+            'telp' => $this->telp,
+            'kabupaten_id' => $this->kabupaten_id,
+        ];
+
         if ($this->instansi_id) {
-            $instansi = Instansi::findOrFail($this->id);
-            $instansi->update([
-                'nama' => $this->nama,
-                'alamat' => $this->alamat,
-                'telp' => $this->telp,
-                'kabupaten_id' => $this->kabupaten_id,
+            $instansi = Instansi::findOrFail($this->instansi_id);
+            $instansi->update($data);
 
-            ]);
-
-            session()->flash('success', 'Instansi berhasil diedit.');
-
-            return redirect()->route('instansis.index');
+            session()->flash('success', 'Instansi berhasil diperbarui.');
         } else {
-            $instansi = Instansi::create([
-                'nama' => $this->nama,
-                'alamat' => $this->alamat,
-                'telp' => $this->telp,
-                'kabupaten_id' => $this->kabupaten_id,
+            Instansi::create($data);
 
-            ]);
-
-            session()->flash('success', 'instansi baru berhasil ditambahkan.');
-
-            return redirect()->route('instansis.create');
+            session()->flash('success', 'Instansi baru berhasil ditambahkan.');
         }
+
+        return redirect()->route('instansis.index');
     }
 
     public function render()
     {
-        return view('livewire.instansis.instansis-form')->layout('layouts.app');
+        return view('livewire.instansis.instansis-form')
+            ->layout('layouts.app');
     }
 }

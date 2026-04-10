@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('alamat');
             $table->string('telp');
-            $table->foreignId('kabupaten_id')->constrained('kabupatens');
+            $table->foreignId('kabupaten_id')->nullable()->constrained('kabupatens')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -18,53 +18,53 @@
                     <div class="mb-4 text-green-700">{{ session('success') }}</div>
                 @endif
 
-                <form wire:submit.prevent="submit" autocomplete="off">
+                <form wire:submit="submit" autocomplete="off">
 
                     {{-- NAMA --}}
                     <div class="mb-4">
                         <label class="block mb-1 font-medium">Nama *</label>
-                        <input type="text" wire:model.defer="nama"
-                               class="border rounded px-3 py-2 w-full"
-                               placeholder="Isi Nama Dokumen" autofocus>
+                    <input type="text" wire:model="nama"
+                           class="border rounded px-3 py-2 w-full"
+                           placeholder="Isi Nama Dokumen" autofocus>
 
-                        @error('nama') 
-                            <span class="text-red-600 text-sm">{{ $message }}</span> 
-                        @enderror
-                    </div>
+                    @error('nama') 
+                        <span class="text-red-600 text-sm">{{ $message }}</span> 
+                    @enderror
+                </div>
 
-                    {{-- FILE PDF --}}
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">File PDF *</label>
-                        <input type="file" wire:model="file_pdf" accept="application/pdf"
-                               class="border rounded px-3 py-2 w-full">
+                {{-- FILE PDF --}}
+                <div class="mb-4">
+                    <label class="block mb-1 font-medium">File PDF *</label>
+                    <input type="file" wire:model="file_pdf" accept="application/pdf"
+                           class="border rounded px-3 py-2 w-full">
 
-                        @error('file_pdf') 
-                            <span class="text-red-600 text-sm">{{ $message }}</span> 
-                        @enderror
+                    @error('file_pdf') 
+                        <span class="text-red-600 text-sm">{{ $message }}</span> 
+                    @enderror
 
-                        {{-- PREVIEW FILE LAMA --}}
-                        @if ($dokumenperencanaan_id && $file_pdf_old)
-                            <p class="mt-2 text-sm">
-                                File lama: 
-                                <a href="{{ asset('storage/'.$file_pdf_old) }}" 
-                                   target="_blank" 
-                                   class="text-blue-600 underline">
-                                   Lihat Dokumen
-                                </a>
-                            </p>
-                        @endif
-                    </div>
+                    {{-- PREVIEW FILE LAMA --}}
+                    @if ($dokumenperencanaan_id && $existing_pdf)
+                        <p class="mt-2 text-sm">
+                            File lama: 
+                            <a href="{{ asset('storage/'.$existing_pdf) }}" 
+                               target="_blank" 
+                               class="text-blue-600 underline">
+                               Lihat Dokumen
+                            </a>
+                        </p>
+                    @endif
+                </div>
 
-                    {{-- TANGGAL --}}
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">Tanggal *</label>
-                        <input type="date" wire:model="tanggal"
-                               class="border rounded px-3 py-2 w-full">
+                {{-- TANGGAL --}}
+                <div class="mb-4">
+                    <label class="block mb-1 font-medium">Tanggal *</label>
+                    <input type="date" wire:model="tanggal"
+                           class="border rounded px-3 py-2 w-full">
 
-                        @error('tanggal') 
-                            <span class="text-red-600 text-sm">{{ $message }}</span> 
-                        @enderror
-                    </div>
+                    @error('tanggal') 
+                        <span class="text-red-600 text-sm">{{ $message }}</span> 
+                    @enderror
+                </div>
 
                     {{-- BUTTON ACTION --}}
                     <div class="flex items-center space-x-2">
@@ -73,14 +73,6 @@
                                 class="bg-blue-600 text-white px-4 py-2 rounded">
                             {{ $dokumenperencanaan_id ? 'Simpan Perubahan' : 'Simpan' }}
                         </button>
-
-                        @if ($dokumenperencanaan_id)
-                            <button type="button" 
-                                    wire:click="delete" 
-                                    class="px-4 py-2 bg-red-600 text-white rounded">
-                                Hapus
-                            </button>
-                        @endif
 
                         <a href="{{ route('dokumen-perencanaans.index') }}"
                            class="px-4 py-2 border rounded">

@@ -3,18 +3,28 @@
 declare(strict_types=1);
 
 use App\Livewire\DaftarKegiatans\DaftarKegiatansIndex;
+use App\Http\Controllers\KwitansiController;
+use App\Livewire\BuktiPengeluaransList;
+use App\Livewire\BuktiPengeluaransUpload;
 use App\Livewire\DokumenPerencanaans\DokumenPerencanaanForm;
 use App\Livewire\DokumenPerencanaans\DokumenPerencanaanIndex;
 use App\Livewire\Instansis\InstansisForm;
 use App\Livewire\Instansis\InstansisIndex;
 use App\Livewire\Kepegawaians\KepegawaiansForm;
 use App\Livewire\Kepegawaians\KepegawaiansIndex;
+use App\Livewire\LaporanKegiatans\LaporanKegiatanForm;
+use App\Livewire\LaporanKegiatans\LaporanKegiatansIndex;
+use App\Livewire\PengajuanPencairanDetail;
+use App\Livewire\PengajuanPencairanForm;
+use App\Livewire\PengajuanPencairansIndex;
 use App\Livewire\Perencanaans\PerencanaanForm;
 use App\Livewire\Perencanaans\PerencanaansIndex;
 use App\Livewire\Persuratans\PersuratansForm;
 use App\Livewire\Persuratans\PersuratansIndex;
 use App\Livewire\UsulanPegawais\UsulanPegawaisForm;
 use App\Livewire\UsulanPegawais\UsulanPegawaisIndex;
+use App\Livewire\UsulanPembayaranForm;
+use App\Livewire\UsulanPembayaransIndex;
 use App\Livewire\Usulans\UsulansForm;
 use App\Livewire\Usulans\UsulansIndex;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard & Profile
     Route::view('dashboard', 'dashboard')->name('dashboard');
-    Route::get('profile', fn () => 'Profile Page')->name('profile.edit');
+    Route::view('profile', 'profile.edit')->name('profile.edit');
 
     /*
     |--------------------------------------------------------------------------
@@ -33,9 +43,9 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::prefix('kepegawaians')->name('kepegawaians.')->group(function () {
-        Route::get('/', KepegawaiansIndex::class)->name('index');
-        Route::get('/create', KepegawaiansForm::class)->name('create');
-        Route::get('/{kepegawaian}/edit', KepegawaiansForm::class)->name('edit');
+        Route::livewire('/', KepegawaiansIndex::class)->name('index');
+        Route::livewire('/create', KepegawaiansForm::class)->name('create');
+        Route::livewire('/{kepegawaian}/edit', KepegawaiansForm::class)->name('edit');
     });
 
     /*
@@ -64,6 +74,41 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', PerencanaansIndex::class)->name('index');
         Route::get('/create', PerencanaanForm::class)->name('create');
         Route::get('/{perencanaan}/edit', PerencanaanForm::class)->name('edit');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | BUKTI PENGELUARAN (Standalone Menu)
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('bukti-pengeluarans')->name('bukti-pengeluarans.')->group(function () {
+        Route::get('/', BuktiPengeluaransList::class)->name('index');
+        Route::get('/upload', BuktiPengeluaransUpload::class)->name('upload');
+        Route::get('/{bukti}/edit', BuktiPengeluaransUpload::class)->name('edit');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | USULAN PEMBAYARAN (30% Biaya Penginapan)
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('usulan-pembayarans')->name('usulan-pembayarans.')->group(function () {
+        Route::get('/', UsulanPembayaransIndex::class)->name('index');
+        Route::get('/create', UsulanPembayaranForm::class)->name('create');
+        Route::get('/{usulanPembayaran}/edit', UsulanPembayaranForm::class)->name('edit');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | KEUANGAN - Pengajuan Pencairan Dana
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('keuangan/pengajuan-pencairans')->name('keuangan.pengajuan-pencairans.')->group(function () {
+        Route::get('/', PengajuanPencairansIndex::class)->name('index');
+        Route::get('/create', PengajuanPencairanForm::class)->name('create');
+        Route::get('/{id}', PengajuanPencairanDetail::class)->name('show');
+        Route::get('/{id}/edit', PengajuanPencairanForm::class)->name('edit');
+        Route::get('/{id}/print/{jenis}', KwitansiController::class.'@print')->name('print');
     });
 
     /*
@@ -114,6 +159,20 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('instansis')->name('instansis.')->group(function () {
         Route::get('/', InstansisIndex::class)->name('index');
         Route::get('/create', InstansisForm::class)->name('create');
+<<<<<<< HEAD
+=======
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN KEGIATAN
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('laporan-kegiatans')->name('laporan-kegiatans.')->group(function () {
+        Route::get('/', LaporanKegiatansIndex::class)->name('index');
+        Route::get('/create', LaporanKegiatanForm::class)->name('create');
+        Route::get('/{laporanKegiatan}/edit', LaporanKegiatanForm::class)->name('edit');
+>>>>>>> ddf70700cbfda6130c029c7903fa803fe223054f
     });
 });
 
