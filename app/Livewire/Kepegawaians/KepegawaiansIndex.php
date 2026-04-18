@@ -32,7 +32,7 @@ class KepegawaiansIndex extends Component
                         ->orWhere('kepegawaians.nip', 'like', '%'.$this->search.'%');
                 });
             })
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'asc')
             ->paginate(5);
 
         return view('livewire.kepegawaians.kepegawaians-index', compact('kepegawaians'))

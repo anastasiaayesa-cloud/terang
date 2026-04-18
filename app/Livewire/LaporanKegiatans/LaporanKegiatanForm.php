@@ -40,6 +40,10 @@ class LaporanKegiatanForm extends Component
         $this->pegawaiList = Kepegawaian::orderBy('nama')->get();
         $this->perencanaanList = Perencanaan::orderBy('nama_komponen')->get();
 
+        // INISIALISASI DEFAULT (PENTING)
+        $this->pegawai_id = '';
+        $this->perencanaan_id = '';
+
         if ($laporanKegiatan) {
             $this->laporanKegiatan = LaporanKegiatan::findOrFail($laporanKegiatan);
             $this->fill($this->laporanKegiatan->only([

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Persuratans;
 
-use App\Models\Kepegawaian;
 use App\Models\Persuratan;
+use App\Models\UsulanPegawai;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -13,78 +13,105 @@ class PersuratansForm extends Component
 {
     use WithFileUploads;
 
-    public ?Persuratan $persuratan = null;
+    public $usulan_id;
 
-    public int $pegawai_id = 0;
+    public $daftar_pegawai = [];
 
-    public string $nama_surat = '';
+    // Properti untuk menampung banyak baris surat
+    public $inputs = [];
 
-    public $file_pdf = null;
+    public $i = 0;
 
-    public $tanggal_upload = null;
-
-    public string $perihal = '';
-
-    public string $jenis_anggaran = 'BPMP';
-
-    protected $rules = [
-        'pegawai_id' => 'required|exists:kepegawaians,id',
-        'nama_surat' => 'required|string|max:255',
-        'file_pdf' => 'nullable|file|mimes:pdf',
-        'tanggal_upload' => 'nullable|date',
-        'perihal' => 'nullable|string',
-        'jenis_anggaran' => 'required|in:BPMP,LUAR BPMP,GABUNGAN',
-    ];
-
-    public function mount($persuratan = null): void
+    public function mount(): void
     {
-        if ($persuratan) {
-            $this->persuratan = Persuratan::findOrFail($persuratan);
-            $this->pegawai_id = $this->persuratan->pegawai_id;
-            $this->nama_surat = $this->persuratan->nama_surat;
-            $this->tanggal_upload = $this->persuratan->tanggal_upload ? (string) $this->persuratan->tanggal_upload : null;
-            $this->perihal = $this->persuratan->perihal ?? '';
-            $this->jenis_anggaran = $this->persuratan->jenis_anggaran ?? 'BPMP';
+        // Cara paling aman: Tangkap dari query string dan paksa menjadi integer
+        $idFromUrl = request()->query('usulan_id');
+
+        if (! $idFromUrl) {
+            // Jika ID tidak ada, kembalikan ke index agar tidak terjadi error database
+            redirect()->route('persuratans.index');
+
+            return;
         }
+
+        $this->usulan_id = (int) $idFromUrl;
+
+        // Ambil daftar pegawai menggunakan ID yang sudah divalidasi
+        $this->daftar_pegawai = UsulanPegawai::where('usulan_id', $this->usulan_id)
+            ->where('status', 'approved')
+            ->with('kepegawaian')
+            ->get();
+
+        $this->addInput(0);
+    }
+
+    // Fungsi menambah baris input baru
+    public function addInput($i)
+    {
+        $this->i = $i + 1;
+        $this->inputs[$this->i] = [
+            'nama_surat' => '',
+            'file_pdf' => null,
+            'tanggal_upload' => date('Y-m-d'),
+            'perihal' => '',
+            'jenis_anggaran' => 'BPMP',
+        ];
+    }
+
+    // Fungsi menghapus baris input
+    public function removeInput($i)
+    {
+        unset($this->inputs[$i]);
     }
 
     public function submit()
     {
-        $data = $this->validate();
+        // 1. Validasi array input
+        $this->validate([
+            'inputs.*.nama_surat' => 'required|string|max:255',
+            'inputs.*.file_pdf' => 'required|file|mimes:pdf|max:2048',
+            'inputs.*.tanggal_upload' => 'required|date',
+            'inputs.*.jenis_anggaran' => 'required|in:BPMP,LUAR BPMP,GABUNGAN',
+        ], [
+            'inputs.*.nama_surat.required' => 'Nama surat wajib diisi.',
+            'inputs.*.file_pdf.required' => 'File PDF wajib diunggah.',
+            'inputs.*.file_pdf.mimes' => 'File harus format PDF.',
+        ]);
 
-        if ($this->persuratan) {
-            $update = [
-                'pegawai_id' => $this->pegawai_id,
-                'nama_surat' => $this->nama_surat,
-                'tanggal_upload' => $this->tanggal_upload,
-                'perihal' => $this->perihal,
-                'jenis_anggaran' => $this->jenis_anggaran,
-            ];
-            if ($this->file_pdf) {
-                $path = $this->file_pdf->store('persuratans', 'public');
-                $update['file_pdf'] = $path;
-            }
-            $this->persuratan->update($update);
-            session()->flash('success', 'Persuratan berhasil diupdate.');
-        } else {
-            $path = $this->file_pdf ? $this->file_pdf->store('persuratans', 'public') : null;
-            Persuratan::create([
-                'pegawai_id' => $this->pegawai_id,
-                'nama_surat' => $this->nama_surat,
-                'file_pdf' => $path,
-                'tanggal_upload' => $this->tanggal_upload ?? now(),
-                'perihal' => $this->perihal,
-                'jenis_anggaran' => $this->jenis_anggaran,
-            ]);
-            session()->flash('success', 'Persuratan berhasil disimpan.');
+        // 2. Ambil semua pegawai_id dari daftar_pegawai yang sudah di-load di mount()
+        // Kita simpan ke dalam array agar bisa di-looping
+        // PROTEKSI: Jika usulan_id tidak ada, jangan lanjutkan
+        if (! $this->usulan_id) {
+            session()->flash('error', 'ID Kegiatan tidak ditemukan. Silakan kembali ke halaman indeks.');
+
+            return;
         }
+
+        $pegawaiIds = $this->daftar_pegawai->pluck('pegawai_id');
+
+        foreach ($this->inputs as $value) {
+            $path = $value['file_pdf']->store('persuratans', 'public');
+
+            foreach ($pegawaiIds as $idPegawai) {
+                Persuratan::create([
+                    'usulan_id' => $this->usulan_id, // Sekarang aman
+                    'pegawai_id' => $idPegawai,
+                    'nama_surat' => $value['nama_surat'],
+                    'file_pdf' => $path,
+                    'tanggal_upload' => $value['tanggal_upload'],
+                    'perihal' => $value['perihal'] ?: '-',
+                    'jenis_anggaran' => $value['jenis_anggaran'],
+                ]);
+            }
+        }
+
+        session()->flash('success', 'Dokumen surat berhasil disimpan.');
 
         return redirect()->route('persuratans.index');
     }
 
     public function render()
     {
-        // Pass list of pegawai for dropdown if needed by the view
-        return view('livewire.persuratans.persuratans-form', ['pegawais' => Kepegawaian::all()]);
+        return view('livewire.persuratans.persuratans-form');
     }
 }

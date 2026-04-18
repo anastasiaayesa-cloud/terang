@@ -45,7 +45,7 @@ class Usulan extends Model
 
     public function usulanPegawais()
     {
-        return $this->hasMany(UsulanPegawai::class);
+        return $this->hasMany(UsulanPegawai::class, 'usulan_id');
     }
 
     // Scope: Usulan yang memiliki pegawai dengan status approved
@@ -54,5 +54,10 @@ class Usulan extends Model
         return $query->whereHas('usulanPegawais', function (Builder $q) {
             $q->where('status', 'approved');
         })->distinct();
+    }
+
+    public function persuratan()
+    {
+        return $this->hasMany(Persuratan::class, 'usulan_id');
     }
 }

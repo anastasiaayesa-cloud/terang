@@ -42,22 +42,6 @@
                                 </div>
                                 @error('pegawai_ids') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Pegawai @if (count($pegawai_ids) > 0)<span class="text-blue-600 font-normal">({{ count($pegawai_ids) }} dipilih)</span>@endif
-                                </label>
-                                <div class="border rounded-md max-h-48 overflow-y-auto">
-                                    @foreach ($pegawais as $pegawai)
-                                        <label class="flex items-center px-3 py-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0">
-                                            <input type="checkbox" wire:model="pegawai_ids" value="{{ $pegawai->id }}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                            <span class="ml-2 text-sm">{{ $pegawai->nama }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
-                                @error('pegawai_ids') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
                         </div>
 
                         <div class="mt-6 flex gap-4">

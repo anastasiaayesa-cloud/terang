@@ -15,9 +15,11 @@ return new class extends Migration
             $table->string('kode')->nullable();
             $table->string('nama_komponen');
             $table->unsignedBigInteger('dokumen_perencanaan_id')->nullable();
+            $table->unsignedBigInteger('usulan_id')->nullable();
             $table->timestamps();
 
             $table->foreign('dokumen_perencanaan_id')->references('id')->on('dokumen_perencanaans')->nullOnDelete();
+            $table->foreign('usulan_id')->references('id')->on('usulans')->nullOnDelete();
         });
     }
 

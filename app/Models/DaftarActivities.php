@@ -8,15 +8,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class DaftarKegiatan extends Model
+class DaftarActivities extends Model
 {
     use HasFactory;
+
+    protected $table = 'daftar_kegiatans';
 
     protected $fillable = [
         'sumber_type',
         'sumber_id',
-        'nama_kegiatan',      // sudah ada
-        'nama_komponen',       // baru
+        'nama_kegiatan',
+        'nama_komponen',
         'tujuan_kegiatan',
         'waktu_kegiatan',
         'keterangan',
@@ -32,16 +34,24 @@ class DaftarKegiatan extends Model
         return $this->morphTo();
     }
 
+    /**
+     * Menangani label status.
+     * Ditambahkan null coalescing (??) agar tidak error jika status kosong.
+     */
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
             'usulan' => 'Usulan',
             'perencanaan' => 'Perencanaan',
             'tidak_ada_di_perencanaan' => 'Tidak ada di Perencanaan',
-            default => $this->status,
+            // Jika status null atau tidak cocok, kembalikan string '-' atau 'Draft'
+            default => $this->status ?? '-',
         };
     }
 
+    /**
+     * Menangani class CSS untuk badge status.
+     */
     public function getStatusBadgeClassAttribute(): string
     {
         return match ($this->status) {
@@ -50,25 +60,5 @@ class DaftarKegiatan extends Model
             'tidak_ada_di_perencanaan' => 'bg-red-100 text-red-800',
             default => 'bg-gray-100 text-gray-800',
         };
-    }
-
-    public function scopeDariUsulan($query)
-    {
-        return $query->where('sumber_type', Usulan::class);
-    }
-
-    public function scopeDariPerencanaan($query)
-    {
-        return $query->where('sumber_type', Perencanaan::class);
-    }
-
-    public function scopeStatusUsulan($query)
-    {
-        return $query->where('status', 'usulan');
-    }
-
-    public function scopeStatusTidakAdaDiPerencanaan($query)
-    {
-        return $query->where('status', 'tidak_ada_di_perencanaan');
     }
 }

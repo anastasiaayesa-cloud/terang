@@ -92,7 +92,7 @@ class Kepegawaian extends Model
     {
         return $this->hasMany(UsulanPegawai::class, 'pegawai_id');
     }
-    
+
     public function laporanKegiatans()
     {
         return $this->hasMany(LaporanKegiatan::class, 'pegawai_id', 'id');

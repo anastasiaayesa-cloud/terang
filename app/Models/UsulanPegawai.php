@@ -25,7 +25,7 @@ class UsulanPegawai extends Model
 
     public function usulan(): BelongsTo
     {
-        return $this->belongsTo(Usulan::class);
+        return $this->belongsTo(Usulan::class, 'usulan_id');
     }
 
     public function kepegawaian(): BelongsTo
@@ -47,5 +47,11 @@ class UsulanPegawai extends Model
         // Jangan simpan rejected_by untuk sekarang sesuai permintaan
         $this->rejected_at = now();
         $this->save();
+    }
+
+    public function persuratan()
+    {
+        return $this->hasOne(Persuratan::class, 'pegawai_id', 'pegawai_id')
+            ->whereColumn('usulan_id', 'usulan_id');
     }
 }

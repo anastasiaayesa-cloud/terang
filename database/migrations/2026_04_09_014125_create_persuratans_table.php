@@ -18,8 +18,8 @@ return new class extends Migration
             // 2. Foreign Key ke tabel pegawais
             // Pastikan nama tabelnya adalah 'pegawais' (jamak) sesuai standar Laravel
             $table->foreignId('pegawai_id')
-                  ->constrained('kepegawaians') 
-                  ->onDelete('cascade'); 
+                ->constrained('kepegawaians')
+                ->onDelete('cascade');
 
             // 3. Kolom Informasi Surat
             $table->string('nama_surat');

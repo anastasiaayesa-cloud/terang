@@ -55,11 +55,7 @@
                                 <th class="px-4 py-2 border">Kode</th>
                                 <th class="px-4 py-2 border">Nama Komponen</th>
                                 <th class="px-4 py-2 border">Dokumen</th>
-                                <!-- <th class="px-4 py-2 border">Sumber</th>
-                                <th class="px-4 py-2 border">Bukti</th>
-                                <th class="px-4 py-2 border">Total Bukti</th>
-                                <th class="px-4 py-2 border">Usulan 30%</th>
-                                <th class="px-4 py-2 border">Grand Total</th> -->
+                                <th class="px-4 py-2 border">Sumber</th>
                                 <th class="px-4 py-2 border">Aksi</th>
                             </tr>
                         </thead>
@@ -72,21 +68,6 @@
                                     <td class="px-4 py-2 border">
                                         {{ $perencanaan->dokumenPerencanaan?->nama ?? '-' }}
                                     </td>
-                                    <td class="px-4 py-2 border text-center">
-                                        <a href="{{ route('bukti-pengeluarans.index') }}"
-                                           class="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 text-sm">
-                                            📄 {{ $perencanaan->buktiPengeluarans->count() }} File
-                                        </a>
-                                    </td>
-                                    <td class="px-4 py-2 border text-right font-medium">
-                                        Rp {{ number_format($perencanaan->buktiPengeluarans->sum('nominal'), 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 py-2 border text-right font-medium text-orange-700">
-                                        Rp {{ number_format($perencanaan->usulanPembayarans->sum('total_nominal'), 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 py-2 border text-right font-bold text-green-700">
-                                        Rp {{ number_format($perencanaan->buktiPengeluarans->sum('nominal') + $perencanaan->usulanPembayarans->sum('total_nominal'), 0, ',', '.') }}
-                                    </td>
                                     <td class="px-4 py-2 border">
                                         @if ($perencanaan->usulan)
                                             <span class="text-blue-600">{{ $perencanaan->usulan->nama_kegiatan }}</span>
@@ -97,17 +78,14 @@
                                     <td class="px-4 py-2 border">
                                         <a href="{{ route('perencanaans.edit', $perencanaan->id) }}"
                                            class="mr-2 text-blue-600">Edit</a>
-                                        <a href="{{ route('bukti-pengeluarans.index') }}"
-                                           class="text-green-600">Bukti</a>
+                                        <button wire:click="delete({{ $perencanaan->id }})"
+                                                class="text-red-600"
+                                                onclick="return confirm('Yakin hapus?')">Hapus</button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-<<<<<<< HEAD
                                     <td colspan="6" class="px-4 py-2 border text-center">
-=======
-                                    <td colspan="8" class="px-4 py-2 border text-center">
->>>>>>> ddf70700cbfda6130c029c7903fa803fe223054f
                                         Tidak ada data perencanaan.
                                     </td>
                                 </tr>

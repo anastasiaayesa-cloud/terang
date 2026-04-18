@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\DaftarKegiatans;
 
-use App\Models\DaftarKegiatan;
+use App\Models\DaftarActivities;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -30,7 +30,7 @@ class DaftarKegiatansIndex extends Component
 
     public function render()
     {
-        $daftarKegiatans = DaftarKegiatan::query()
+        $daftarKegiatans = DaftarActivities::query()
             ->with('sumber')
             ->when($this->search, function ($query) {
                 $query->where('nama_kegiatan', 'like', '%'.$this->search.'%');
@@ -41,7 +41,6 @@ class DaftarKegiatansIndex extends Component
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
-        return view('livewire.daftar-kegiatans.daftar-kegiatans-index', compact('daftarKegiatans'))
-            ->layout('layouts.app');
+        return view('livewire.daftar-kegiatans.daftar-kegiatans-index', compact('daftarKegiatans'));
     }
 }

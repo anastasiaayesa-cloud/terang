@@ -52,10 +52,21 @@ class PerencanaansIndex extends Component
         }
     }
 
+    public function delete($id)
+    {
+        try {
+            $perencanaan = Perencanaan::findOrFail($id);
+            $perencanaan->delete();
+            session()->flash('success', 'Perencanaan berhasil dihapus.');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Gagal menghapus perencanaan: '.$e->getMessage());
+        }
+    }
+
     public function render()
     {
         $perencanaans = Perencanaan::query()
-            ->with(['dokumenPerencanaan', 'buktiPengeluarans', 'usulanPembayarans'])
+            ->with(['dokumenPerencanaan', 'usulan'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('perencanaans.kode', 'like', '%'.$this->search.'%')

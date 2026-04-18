@@ -3,10 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Kepegawaian;
-use App\Models\LaporanKegiatan;
-use App\Models\Perencanaan;
 use App\Models\User;
-use App\Models\Usulan;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -30,8 +27,5 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Kepegawaian::factory(20)->create();
-        Perencanaan::factory(10)->create();
-        LaporanKegiatan::factory(15)->create();
-        Usulan::factory(10)->create();
     }
 }

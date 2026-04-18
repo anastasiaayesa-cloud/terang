@@ -17,13 +17,16 @@ class UsulanPegawaisForm extends Component
 
     public $pegawai_ids = [];
 
-    // public $catatan;
-
     public $rejected_reason;
 
-    public $alasan;
-
     public $pegawais;
+
+    public $usulan;
+
+    // Tambahan untuk fitur tolak
+    public $showModal = false;
+
+    public $selectedId;
 
     public function mount($usulanPegawai = null, $usulan_id = null)
     {
@@ -39,7 +42,6 @@ class UsulanPegawaisForm extends Component
             $this->usulan = $this->usulanPegawai->usulan;
             $this->usulan_id = $this->usulanPegawai->usulan_id;
             $this->pegawai_ids = [$this->usulanPegawai->pegawai_id];
-            $this->catatan = $this->usulanPegawai->catatan;
             $this->rejected_reason = $this->usulanPegawai->rejected_reason;
         }
     }
@@ -50,10 +52,42 @@ class UsulanPegawaisForm extends Component
             'usulan_id' => 'required|exists:usulans,id',
             'pegawai_ids' => 'required|array|min:1',
             'pegawai_ids.*' => 'exists:kepegawaians,id',
-            'catatan' => 'nullable|string',
-            'rejected_reason' => 'required|string',
+            'rejected_reason' => 'nullable|string',
         ];
     }
+
+    // --- FUNGSI BARU UNTUK PENOLAKAN ---
+
+    public function confirmReject($id)
+    {
+        $this->selectedId = $id;
+        $this->rejected_reason = ''; // Reset alasan
+        $this->showModal = true;
+    }
+
+    public function processReject()
+    {
+        // Validasi wajib di sini
+        $this->validate([
+            'rejected_reason' => 'required|string|min:5',
+        ], [
+            'rejected_reason.required' => 'Alasan penolakan wajib diisi!',
+        ]);
+
+        $item = UsulanPegawai::findOrFail($this->selectedId);
+        $item->update([
+            'status' => 'rejected',
+            'rejected_reason' => $this->rejected_reason,
+        ]);
+
+        $this->showModal = false;
+        session()->flash('success', 'Pegawai berhasil ditolak.');
+
+        // Opsional: Redirect atau refresh
+        return redirect()->route('usulan-pegawais.index');
+    }
+
+    // --- FUNGSI BAWAAN SEBELUMNYA ---
 
     public function submit()
     {
@@ -62,7 +96,6 @@ class UsulanPegawaisForm extends Component
         if ($this->usulanPegawai) {
             $this->usulanPegawai->update([
                 'pegawai_id' => $data['pegawai_ids'][0],
-                'rejected_reason' => $data['catatan'],
             ]);
             session()->flash('success', 'Usulan pegawai berhasil diupdate.');
         } else {
@@ -75,16 +108,6 @@ class UsulanPegawaisForm extends Component
                 ]);
             }
             session()->flash('success', count($data['pegawai_ids']).' pegawai berhasil ditambahkan.');
-        }
-
-        return redirect()->route('usulan-pegawais.index');
-    }
-
-    public function delete()
-    {
-        if ($this->usulanPegawai) {
-            $this->usulanPegawai->delete();
-            session()->flash('success', 'Usulan pegawai berhasil dihapus.');
         }
 
         return redirect()->route('usulan-pegawais.index');

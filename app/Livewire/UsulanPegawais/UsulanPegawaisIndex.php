@@ -6,7 +6,6 @@ namespace App\Livewire\UsulanPegawais;
 
 use App\Models\Usulan;
 use App\Models\UsulanPegawai;
-// (policy-based authorization removed per request)
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -18,7 +17,12 @@ class UsulanPegawaisIndex extends Component
 
     public $filterStatus = '';
 
-    // tidak menyimpan input alasan lagi
+    // Properti untuk Modal Penolakan
+    public $showModal = false;
+
+    public $selectedId;
+
+    public $rejected_reason; // Input alasan dari modal
 
     protected $paginationTheme = 'tailwind';
 
@@ -39,11 +43,46 @@ class UsulanPegawaisIndex extends Component
         session()->flash('success', 'Usulan pegawai berhasil disetujui.');
     }
 
+    /**
+     * Membuka modal dan mencatat ID yang akan ditolak
+     */
+    public function confirmReject($id)
+    {
+        $this->selectedId = $id;
+        $this->rejected_reason = ''; // Reset form alasan
+        $this->showModal = true;
+    }
+
+    /**
+     * Memproses penolakan dengan alasan (Reject_reason)
+     */
+    public function processReject()
+    {
+        // Validasi wajib isi alasan
+        $this->validate([
+            'rejected_reason' => 'required|string|min:5',
+        ], [
+            'rejected_reason.required' => 'Alasan penolakan wajib diisi!',
+            'rejected_reason.min' => 'Alasan minimal 5 karakter.',
+        ]);
+
+        $usulanPegawai = UsulanPegawai::findOrFail($this->selectedId);
+
+        $usulanPegawai->update([
+            'status' => 'rejected',
+            'reject_reason' => $this->rejected_reason, // Sesuai nama kolom database kamu
+        ]);
+
+        $this->showModal = false; // Tutup modal
+        session()->flash('success', 'Usulan pegawai berhasil ditolak dengan alasan.');
+    }
+
+    /**
+     * Fungsi reject lama (opsional dihapus jika sudah pakai confirmReject)
+     */
     public function reject($id)
     {
-        $usulanPegawai = UsulanPegawai::findOrFail($id);
-        $usulanPegawai->update(['status' => 'rejected']);
-        session()->flash('success', 'Usulan pegawai berhasil ditolak.');
+        $this->confirmReject($id);
     }
 
     public function delete($usulanPegawaiId)
@@ -68,6 +107,7 @@ class UsulanPegawaisIndex extends Component
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('livewire.usulan-pegawais.usulan-pegawais-index', compact('usulans'));
+        return view('livewire.usulan-pegawais.usulan-pegawais-index', compact('usulans'))
+            ->layout('layouts.app');
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
-use App\Models\DaftarKegiatan;
+use App\Models\DaftarActivities;
 use App\Models\Perencanaan;
 use App\Models\Usulan;
 
@@ -12,63 +12,47 @@ class PerencanaanObserver
 {
     public function created(Perencanaan $perencanaan): void
     {
+        $namaKegiatan = null;
+
+        // Logika Pencarian Nama Kegiatan
         if ($perencanaan->usulan_id) {
-            $this->syncUsulanStatus($perencanaan->usulan_id);
-        } else {
-            DaftarKegiatan::create([
-                'sumber_type' => Perencanaan::class,
-                'sumber_id' => $perencanaan->id,
-                'nama_kegiatan' => $perencanaan->nama_komponen,
-                'tujuan_kegiatan' => null,
-                'waktu_kegiatan' => null,
-                'keterangan' => $perencanaan->kode,
-                'status' => 'perencanaan',
-            ]);
+            $usulan = Usulan::find($perencanaan->usulan_id);
+            if ($usulan) {
+                $namaKegiatan = $usulan->nama_kegiatan;
+            }
         }
+
+        // Logika Status Dinamis
+        // Jika usulan_id ada, status 'usulan'. Jika tidak, status 'perencanaan'.
+        $statusDinamis = $perencanaan->usulan_id ? 'usulan' : 'perencanaan';
+
+        DaftarActivities::create([
+            'sumber_type' => Perencanaan::class,
+            'sumber_id' => $perencanaan->id,
+            'nama_kegiatan' => $namaKegiatan,
+            'nama_komponen' => $perencanaan->nama_komponen,
+            'status' => $statusDinamis,
+            'keterangan' => null, // Sesuai permintaan sebelumnya: dikosongkan
+            'tujuan_kegiatan' => null,
+            'waktu_kegiatan' => null,
+        ]);
     }
 
     public function updated(Perencanaan $perencanaan): void
     {
-        $oldUsulanId = $perencanaan->getOriginal('usulan_id');
-        $newUsulanId = $perencanaan->usulan_id;
+        $daftarKegiatans = DaftarActivities::where('sumber_type', Perencanaan::class)
+            ->where('sumber_id', $perencanaan->id)
+            ->first();
 
-        if ($oldUsulanId === $newUsulanId) {
-            if ($newUsulanId === null) {
-                $daftarKegiatan = DaftarKegiatan::where('sumber_type', Perencanaan::class)
-                    ->where('sumber_id', $perencanaan->id)
-                    ->first();
+        if ($daftarKegiatans) {
+            $namaKegiatan = $perencanaan->usulan_id && $perencanaan->usulan
+                ? $perencanaan->usulan->nama_kegiatan
+                : null;
 
-                if ($daftarKegiatan) {
-                    $daftarKegiatan->update([
-                        'nama_kegiatan' => $perencanaan->nama_komponen,
-                        'keterangan' => $perencanaan->kode,
-                    ]);
-                }
-            }
-
-            return;
-        }
-
-        if ($oldUsulanId !== null) {
-            $this->syncUsulanStatus($oldUsulanId);
-        }
-
-        if ($newUsulanId !== null) {
-            $daftarKegiatan = DaftarKegiatan::where('sumber_type', Perencanaan::class)
-                ->where('sumber_id', $perencanaan->id)
-                ->first();
-            if ($daftarKegiatan) {
-                $daftarKegiatan->delete();
-            }
-            $this->syncUsulanStatus($newUsulanId);
-        } else {
-            DaftarKegiatan::create([
-                'sumber_type' => Perencanaan::class,
-                'sumber_id' => $perencanaan->id,
-                'nama_kegiatan' => $perencanaan->nama_komponen,
-                'tujuan_kegiatan' => null,
-                'waktu_kegiatan' => null,
-                'keterangan' => $perencanaan->kode,
+            $daftarKegiatans->update([
+                'nama_kegiatan' => $namaKegiatan,
+                'nama_komponen' => $perencanaan->nama_komponen,
+                'keterangan' => null, // Diubah menjadi null saat update
                 'status' => 'perencanaan',
             ]);
         }
@@ -76,32 +60,8 @@ class PerencanaanObserver
 
     public function deleted(Perencanaan $perencanaan): void
     {
-        if ($perencanaan->usulan_id) {
-            $this->syncUsulanStatus($perencanaan->usulan_id);
-        } else {
-            DaftarKegiatan::where('sumber_type', Perencanaan::class)
-                ->where('sumber_id', $perencanaan->id)
-                ->delete();
-        }
-    }
-
-    protected function syncUsulanStatus(int $usulanId): void
-    {
-        $usulan = Usulan::find($usulanId);
-        if (! $usulan) {
-            return;
-        }
-
-        $hasPerencanaan = $usulan->perencanaans()->exists();
-
-        $daftarKegiatan = DaftarKegiatan::where('sumber_type', Usulan::class)
-            ->where('sumber_id', $usulanId)
-            ->first();
-
-        if ($daftarKegiatan) {
-            $daftarKegiatan->update([
-                'status' => $hasPerencanaan ? 'usulan' : 'tidak_ada_di_perencanaan',
-            ]);
-        }
+        DaftarActivities::where('sumber_type', Perencanaan::class)
+            ->where('sumber_id', $perencanaan->id)
+            ->delete();
     }
 }

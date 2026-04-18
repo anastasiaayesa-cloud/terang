@@ -7,7 +7,6 @@ namespace App\Livewire;
 use App\Models\BuktiPengeluaran;
 use App\Models\Perencanaan;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -15,9 +14,9 @@ class BuktiPengeluaransUpload extends Component
 {
     use WithFileUploads;
 
-    public $perencanaan_id;
+    public $perencanaan_id = ''; // Inisialisasi string kosong
 
-    public $bukti_id; // untuk edit mode
+    public $bukti_id;
 
     public $files = [];
 
@@ -27,31 +26,25 @@ class BuktiPengeluaransUpload extends Component
 
     public $perencanaanList = [];
 
-    public $perencanaan;
-
     public function mount($bukti_id = null)
     {
-        // Load all perencanaans for dropdown
         $this->perencanaanList = Perencanaan::orderBy('nama_komponen', 'asc')->get();
 
         if ($bukti_id) {
-            // Edit mode: load existing bukti
             $bukti = BuktiPengeluaran::findOrFail($bukti_id);
-
             $this->bukti_id = $bukti_id;
             $this->perencanaan_id = $bukti->perencanaan_id;
-            $this->perencanaan = $bukti->perencanaan;
-
             $this->existingFiles = [$bukti];
             $this->keepFiles = [$bukti->id => true];
+        } else {
+            // Tambahkan satu form kosong di awal jika mode create
+            $this->addFile();
         }
     }
 
     public function addFile()
     {
-        $index = count($this->files);
         $this->files[] = [
-            'index' => $index,
             'file' => null,
             'tipe_bukti' => '',
             'nominal' => '',
@@ -64,92 +57,76 @@ class BuktiPengeluaransUpload extends Component
     {
         unset($this->files[$index]);
         $this->files = array_values($this->files);
-
-        // Re-index
-        foreach ($this->files as $i => $file) {
-            $this->files[$i]['index'] = $i;
-        }
-    }
-
-    public function toggleKeepFile($buktiId)
-    {
-        $this->keepFiles[$buktiId] = ! $this->keepFiles[$buktiId];
-    }
-
-    public function removeExistingFile($buktiId)
-    {
-        $this->existingFiles = array_filter(
-            $this->existingFiles,
-            fn ($bukti) => $bukti->id != $buktiId
-        );
-        unset($this->keepFiles[$buktiId]);
     }
 
     public function submit()
     {
-        // Validasi perencanaan wajib
-        $this->validate([
+        // 1. Validasi Utama
+        $rules = [
             'perencanaan_id' => 'required|exists:perencanaans,id',
-        ]);
+        ];
 
-        // Validasi files baru
-        $rules = [];
+        // 2. Validasi Array Files - Hanya wajib jika ada file
         foreach ($this->files as $index => $file) {
-            $rules["files.{$index}.file"] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
-            $rules["files.{$index}.tipe_bukti"] = 'required|in:tiket_pesawat,tiket_kapal,tiket_kereta,tiket_taxi,tiket_hotel,bukti_lainnya';
-            $rules["files.{$index}.nominal"] = 'required|numeric|min:0';
-            $rules["files.{$index}.tanggal_bukti"] = 'nullable|date';
-            $rules["files.{$index}.keterangan"] = 'nullable|string|max:500';
+            if (! empty($file['file'])) {
+                $rules["files.{$index}.file"] = 'file|mimes:pdf,jpg,jpeg,png|max:5120';
+            }
+            if (! empty($file['tipe_bukti'])) {
+                $rules["files.{$index}.tipe_bukti"] = 'string';
+            }
+            if (! empty($file['nominal'])) {
+                $rules["files.{$index}.nominal"] = 'numeric|min:0';
+            }
         }
 
         $this->validate($rules);
 
-        // Hapus file yang tidak di-keep (edit mode)
-        if ($this->bukti_id) {
-            foreach ($this->existingFiles as $bukti) {
-                if (empty($this->keepFiles[$bukti->id])) {
-                    // Hapus file dari storage
-                    if (Storage::disk('public')->exists($bukti->file_path)) {
-                        Storage::disk('public')->delete($bukti->file_path);
-                    }
-                    $bukti->delete();
-                } else {
-                    // Update data jika perlu
-                    $bukti->update([
-                        'tipe_bukti' => $this->existingFiles[array_search($bukti, $this->existingFiles)]->tipe_bukti,
-                        'nominal' => $this->existingFiles[array_search($bukti, $this->existingFiles)]->nominal,
-                        'keterangan' => $this->existingFiles[array_search($bukti, $this->existingFiles)]->keterangan,
-                        'tanggal_bukti' => $this->existingFiles[array_search($bukti, $this->existingFiles)]->tanggal_bukti,
-                    ]);
-                }
-            }
+        // 3. Filter hanya file yang akan disubmit
+        $filesToSubmit = array_filter($this->files, function ($file) {
+            return ! empty($file['file']) && ! empty($file['tipe_bukti']) && ! empty($file['nominal']);
+        });
+
+        // Jika tidak ada file yang lengkap, jangan submit
+        if (empty($filesToSubmit)) {
+            session()->flash('error', 'Silakan lengkapi data file (file, tipe bukti, dan nominal) sebelum upload.');
+
+            return;
         }
 
-        // Upload files baru
-        foreach ($this->files as $fileData) {
-            if (empty($fileData['file'])) {
-                continue;
-            }
+        // 4. Cek Pegawai ID (DIUBAH)
+        $pegawai_id = Auth::user()->kepegawaian?->id;
 
+        // Jika kamu ingin mengizinkan submit tanpa pegawai, 
+        // matikan (comment) blok if di bawah ini:
+        /* if (! $pegawai_id) {
+            session()->flash('error', 'User Anda tidak terhubung dengan data Pegawai. Silakan hubungi admin.');
+            return;
+        }
+        */
+
+        // 5. Proses Simpan
+        foreach ($filesToSubmit as $fileData) {
             $file = $fileData['file'];
             $fileName = time().'_'.uniqid().'_'.$file->getClientOriginalName();
             $filePath = $file->storeAs('bukti-pengeluaran', $fileName, 'public');
 
+            // BAGIAN INI YANG HARUS DIPERHATIKAN:
             BuktiPengeluaran::create([
                 'perencanaan_id' => $this->perencanaan_id,
-                'pegawai_id' => Auth::user()->kepegawaian?->id,
-                'tipe_bukti' => $fileData['tipe_bukti'],
-                'file_path' => $filePath,
-                'file_name' => $file->getClientOriginalName(),
-                'file_type' => $file->getMimeType(),
-                'file_size' => $file->getSize(),
-                'nominal' => $fileData['nominal'],
-                'keterangan' => $fileData['keterangan'] ?? null,
-                'tanggal_bukti' => $fileData['tanggal_bukti'] ?? null,
+                'pegawai_id'     => $pegawai_id, // Variabel ini sekarang bisa bernilai null
+                'tipe_bukti'     => $fileData['tipe_bukti'],
+                'file_path'      => $filePath,
+                'file_name'      => $file->getClientOriginalName(),
+                'file_type'      => $file->getMimeType(),
+                'file_size'      => $file->getSize(),
+                'nominal'        => $fileData['nominal'],
+                'keterangan'     => $fileData['keterangan'] ?? null,
+                'tanggal_bukti'  => $fileData['tanggal_bukti'] ?? null,
+                'status'         => 'pending',
             ]);
         }
 
-        session()->flash('success', 'Bukti pengeluaran berhasil diupload.');
+        session()->flash('success', 'Bukti pengeluaran berhasil diunggah.');
 
         return redirect()->route('bukti-pengeluarans.index');
     }

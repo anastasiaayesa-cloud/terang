@@ -32,7 +32,7 @@ class UsulanPegawaiDetail extends Component
         $this->proposal->reject($this->reason);
         session()->flash('success', 'Alasan penolakan tersimpan.');
         // Optional: refresh state
-        $this->emit('reload');
+        $this->dispatch('reload');
     }
 
     public function render()

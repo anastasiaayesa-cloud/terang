@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Models\BuktiPengeluaran;
-use App\Models\Kepegawaian;
 use App\Models\PengajuanPencairan;
 use App\Models\Perencanaan;
 use Illuminate\Support\Facades\Auth;

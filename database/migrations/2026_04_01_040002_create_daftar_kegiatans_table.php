@@ -14,11 +14,12 @@ return new class extends Migration
             $table->id();
             $table->string('sumber_type');
             $table->unsignedBigInteger('sumber_id');
-            $table->string('nama_kegiatan');
+            $table->string('nama_kegiatan')->nullable();
+            $table->string('nama_komponen')->nullable();
             $table->string('tujuan_kegiatan')->nullable();
             $table->date('waktu_kegiatan')->nullable();
             $table->text('keterangan')->nullable();
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->timestamps();
 
             $table->index(['sumber_type', 'sumber_id'], 'sumber_index');
