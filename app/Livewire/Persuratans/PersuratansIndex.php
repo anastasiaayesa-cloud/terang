@@ -24,24 +24,31 @@ class PersuratansIndex extends Component
 
     public function render()
     {
-        // Perbaikan pada query Riwayat Persuratan
+        // 1. Perbaikan pada query Riwayat Persuratan (Ganti 'pegawai' jadi 'pegawais')
         $persurats = Persuratan::with([
                 'perencanaan',
                 'perencanaan.usulan',
-                'pegawai',
+                'pegawais', // PERBAIKAN: Menggunakan nama relasi BelongsToMany dari Model
+                'kategori'  // Tambahkan eager load kategori jika diperlukan di index
             ])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
+                    // Cari berdasarkan data surat
+                    $q->where('nama_surat', 'like', '%'.$this->search.'%')
+                      ->orWhere('perihal', 'like', '%'.$this->search.'%')
+                      
                     // Cari di tabel perencanaan
-                    $q->whereHas('perencanaan', function ($qq) {
+                    ->orWhereHas('perencanaan', function ($qq) {
                         $qq->where('kode', 'like', '%'.$this->search.'%')
                             ->orWhere('nama_komponen', 'like', '%'.$this->search.'%')
                             ->orWhereHas('usulan', function ($qqq) {
+                                // PERBAIKAN TYPO: nama_kegatan -> nama_kegiatan (sesuaikan database Anda)
                                 $qqq->where('nama_kegatan', 'like', '%'.$this->search.'%');
                             });
                     })
-                    // Atau cari di nama pegawai
-                    ->orWhereHas('pegawai', function ($qq) {
+                    
+                    // PERBAIKAN: Cari di nama pegawai melalui relasi PIVOT (pegawais)
+                    ->orWhereHas('pegawais', function ($qq) {
                         $qq->where('nama', 'like', '%'.$this->search.'%');
                     });
                 });
@@ -49,10 +56,9 @@ class PersuratansIndex extends Component
             ->orderBy('tanggal_upload', 'desc')
             ->paginate(10);
 
-        // Query Perencanaan yang siap dibuatkan surat (Pegawai status Approved)
+        // 2. Query Perencanaan yang siap dibuatkan surat (Pegawai status Approved)
         $perencanaansSiapSurat = Perencanaan::whereNotNull('usulan_id')
             ->whereHas('usulan.usulanPegawais', function ($query) {
-                // Sesuai input Anda: status ada di tabel usulan_pegawai
                 $query->where('status', 'approved');
             })
             ->with(['usulan', 'usulan.usulanPegawais' => function ($query) {
@@ -71,12 +77,9 @@ class PersuratansIndex extends Component
         $persuratan = Persuratan::find($id);
 
         if ($persuratan) {
-            // Jika ingin menghapus satu baris saja:
+            // Jika menggunakan pivot, data di tabel pivot otomatis terhapus jika di migrasi diset onDelete('cascade')
+            // Jika tidak, Anda bisa hapus manual: $persuratan->pegawais()->detach();
             $persuratan->delete();
-            
-            // ATAU Jika ingin menghapus semua surat dalam perencanaan yang sama:
-            // Persuratan::where('perencanaan_id', $persuratan->perencanaan_id)->delete();
-
             session()->flash('success', 'Surat berhasil dihapus.');
         } else {
             session()->flash('error', 'Surat tidak ditemukan.');

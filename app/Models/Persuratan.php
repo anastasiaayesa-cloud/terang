@@ -7,15 +7,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Persuratan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'pegawai_id',
+        // 'pegawai_id', // HAPUS/KOMENTARI INI: Karena hubungan pegawai sudah pindah ke tabel pivot
         'usulan_id',
         'perencanaan_id',
+        'persuratan_kategori_id',
         'nama_surat',
         'file_pdf',
         'tanggal_upload',
@@ -23,9 +25,13 @@ class Persuratan extends Model
         'jenis_anggaran',
     ];
 
-    public function pegawai(): BelongsTo
+    /**
+     * Relasi Many-to-Many ke Kepegawaian (Sistem Pivot)
+     */
+    public function pegawais(): BelongsToMany
     {
-        return $this->belongsTo(Kepegawaian::class, 'pegawai_id');
+        // Pastikan tabel 'persuratan_pegawai' sudah ada di database
+        return $this->belongsToMany(Kepegawaian::class, 'persuratan_pegawai', 'persuratan_id', 'pegawai_id');
     }
 
     public function perencanaan(): BelongsTo
@@ -33,9 +39,13 @@ class Persuratan extends Model
         return $this->belongsTo(Perencanaan::class);
     }
 
-// File: app/Models/Persuratan.php
-    public function usulan()
+    public function usulan(): BelongsTo
     {
         return $this->belongsTo(Usulan::class, 'usulan_id');
+    }
+
+    public function kategori(): BelongsTo
+    {
+        return $this->belongsTo(PersuratanKategori::class, 'persuratan_kategori_id');
     }
 }

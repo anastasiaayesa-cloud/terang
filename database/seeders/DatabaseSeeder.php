@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             InstansiSeeder::class,
             DokumenPerencanaanSeeder::class,
             PaguHotelSeeder::class,
+            PersuratanKategoriSeeder::class,
         ]);
 
         Kepegawaian::factory(20)->create();
