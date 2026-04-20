@@ -129,7 +129,7 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::prefix('persuratans')->name('persuratans.')->group(function () {
         Route::get('/', PersuratansIndex::class)->name('index');
-        Route::get('/create', PersuratansForm::class)->name('create');
+        Route::get('/create/{perencanaan_id}', PersuratansForm::class)->name('create');
         Route::get('/{persuratan}/edit', PersuratansForm::class)->name('edit');
     });
 

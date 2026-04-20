@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Persuratans;
 
+use App\Models\Perencanaan;
 use App\Models\Persuratan;
 use App\Models\UsulanPegawai;
 use Livewire\Component;
@@ -13,40 +14,48 @@ class PersuratansForm extends Component
 {
     use WithFileUploads;
 
-    public $usulan_id;
+    public ?Perencanaan $perencanaan = null;
 
-    public $daftar_pegawai = [];
+    public $usulan_pegawais_approved = [];
 
-    // Properti untuk menampung banyak baris surat
     public $inputs = [];
 
     public $i = 0;
 
-    public function mount(): void
+    public function mount(int $perencanaan_id): void
     {
-        // Cara paling aman: Tangkap dari query string dan paksa menjadi integer
-        $idFromUrl = request()->query('usulan_id');
+        $this->perencanaan = Perencanaan::with(['usulan.usulanPegawais.kepegawaian'])
+            ->find($perencanaan_id);
 
-        if (! $idFromUrl) {
-            // Jika ID tidak ada, kembalikan ke index agar tidak terjadi error database
+        if (! $this->perencanaan) {
+            session()->flash('error', 'Perencanaan tidak ditemukan.');
+
             redirect()->route('persuratans.index');
 
             return;
         }
 
-        $this->usulan_id = (int) $idFromUrl;
-
-        // Ambil daftar pegawai menggunakan ID yang sudah divalidasi
-        $this->daftar_pegawai = UsulanPegawai::where('usulan_id', $this->usulan_id)
-            ->where('status', 'approved')
-            ->with('kepegawaian')
-            ->get();
+        $this->loadApprovedPegawais();
 
         $this->addInput(0);
     }
 
-    // Fungsi menambah baris input baru
-    public function addInput($i)
+    protected function loadApprovedPegawais(): void
+    {
+        if (! $this->perencanaan->usulan_id) {
+            $this->usulan_pegawais_approved = [];
+
+            return;
+        }
+
+        $this->usulan_pegawais_approved = UsulanPegawai::where('usulan_id', $this->perencanaan->usulan_id)
+            ->where('status', 'approved')
+            ->with('kepegawaian')
+            ->get()
+            ->toArray();
+    }
+
+    public function addInput($i): void
     {
         $this->i = $i + 1;
         $this->inputs[$this->i] = [
@@ -58,15 +67,13 @@ class PersuratansForm extends Component
         ];
     }
 
-    // Fungsi menghapus baris input
-    public function removeInput($i)
+    public function removeInput($i): void
     {
         unset($this->inputs[$i]);
     }
 
     public function submit()
     {
-        // 1. Validasi array input
         $this->validate([
             'inputs.*.nama_surat' => 'required|string|max:255',
             'inputs.*.file_pdf' => 'required|file|mimes:pdf|max:2048',
@@ -78,23 +85,27 @@ class PersuratansForm extends Component
             'inputs.*.file_pdf.mimes' => 'File harus format PDF.',
         ]);
 
-        // 2. Ambil semua pegawai_id dari daftar_pegawai yang sudah di-load di mount()
-        // Kita simpan ke dalam array agar bisa di-looping
-        // PROTEKSI: Jika usulan_id tidak ada, jangan lanjutkan
-        if (! $this->usulan_id) {
-            session()->flash('error', 'ID Kegiatan tidak ditemukan. Silakan kembali ke halaman indeks.');
+        if (! $this->perencanaan) {
+            session()->flash('error', 'Perencanaan tidak ditemukan.');
 
             return;
         }
 
-        $pegawaiIds = $this->daftar_pegawai->pluck('pegawai_id');
+        $pegawaiIds = array_column($this->usulan_pegawais_approved, 'pegawai_id');
+
+        if (empty($pegawaiIds) && $this->perencanaan->usulan_id) {
+            session()->flash('error', 'Belum ada pegawai yang di-approve untuk perencanaan ini.');
+
+            return;
+        }
 
         foreach ($this->inputs as $value) {
             $path = $value['file_pdf']->store('persuratans', 'public');
 
             foreach ($pegawaiIds as $idPegawai) {
                 Persuratan::create([
-                    'usulan_id' => $this->usulan_id, // Sekarang aman
+                    'perencanaan_id' => $this->perencanaan->id,
+                    'usulan_id' => $this->perencanaan->usulan_id,
                     'pegawai_id' => $idPegawai,
                     'nama_surat' => $value['nama_surat'],
                     'file_pdf' => $path,

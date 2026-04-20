@@ -14,6 +14,8 @@ class Persuratan extends Model
 
     protected $fillable = [
         'pegawai_id',
+        'usulan_id',
+        'perencanaan_id',
         'nama_surat',
         'file_pdf',
         'tanggal_upload',
@@ -24,5 +26,16 @@ class Persuratan extends Model
     public function pegawai(): BelongsTo
     {
         return $this->belongsTo(Kepegawaian::class, 'pegawai_id');
+    }
+
+    public function perencanaan(): BelongsTo
+    {
+        return $this->belongsTo(Perencanaan::class);
+    }
+
+// File: app/Models/Persuratan.php
+    public function usulan()
+    {
+        return $this->belongsTo(Usulan::class, 'usulan_id');
     }
 }

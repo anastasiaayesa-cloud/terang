@@ -96,7 +96,7 @@ class BuktiPengeluaransUpload extends Component
         // 4. Cek Pegawai ID (DIUBAH)
         $pegawai_id = Auth::user()->kepegawaian?->id;
 
-        // Jika kamu ingin mengizinkan submit tanpa pegawai, 
+        // Jika kamu ingin mengizinkan submit tanpa pegawai,
         // matikan (comment) blok if di bawah ini:
         /* if (! $pegawai_id) {
             session()->flash('error', 'User Anda tidak terhubung dengan data Pegawai. Silakan hubungi admin.');
@@ -113,16 +113,16 @@ class BuktiPengeluaransUpload extends Component
             // BAGIAN INI YANG HARUS DIPERHATIKAN:
             BuktiPengeluaran::create([
                 'perencanaan_id' => $this->perencanaan_id,
-                'pegawai_id'     => $pegawai_id, // Variabel ini sekarang bisa bernilai null
-                'tipe_bukti'     => $fileData['tipe_bukti'],
-                'file_path'      => $filePath,
-                'file_name'      => $file->getClientOriginalName(),
-                'file_type'      => $file->getMimeType(),
-                'file_size'      => $file->getSize(),
-                'nominal'        => $fileData['nominal'],
-                'keterangan'     => $fileData['keterangan'] ?? null,
-                'tanggal_bukti'  => $fileData['tanggal_bukti'] ?? null,
-                'status'         => 'pending',
+                'pegawai_id' => $pegawai_id, // Variabel ini sekarang bisa bernilai null
+                'tipe_bukti' => $fileData['tipe_bukti'],
+                'file_path' => $filePath,
+                'file_name' => $file->getClientOriginalName(),
+                'file_type' => $file->getMimeType(),
+                'file_size' => $file->getSize(),
+                'nominal' => $fileData['nominal'],
+                'keterangan' => $fileData['keterangan'] ?? null,
+                'tanggal_bukti' => $fileData['tanggal_bukti'] ?? null,
+                'status' => 'pending',
             ]);
         }
 

@@ -32,7 +32,8 @@ class Perencanaan extends Model
 
     public function usulan()
     {
-        return $this->belongsTo(Usulan::class);
+        // Pastikan foreign key-nya adalah 'usulan_id'
+        return $this->belongsTo(Usulan::class, 'usulan_id');
     }
 
     public function daftarKegiatan(): MorphOne
