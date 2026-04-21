@@ -32,7 +32,6 @@ class Perencanaan extends Model
 
     public function usulan()
     {
-        // Pastikan foreign key-nya adalah 'usulan_id'
         return $this->belongsTo(Usulan::class, 'usulan_id');
     }
 

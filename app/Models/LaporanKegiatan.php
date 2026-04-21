@@ -13,6 +13,7 @@ class LaporanKegiatan extends Model
         'pegawai_id',
         'perencanaan_id',
         'judul_laporan',
+        'usulan_id',
         'deskripsi_kegiatan',
         'tanggal_mulai',
         'tanggal_selesai',
@@ -22,10 +23,13 @@ class LaporanKegiatan extends Model
         'catatan_reviewer',
     ];
 
-    protected $casts = [
-        'tanggal_mulai' => 'date',
-        'tanggal_selesai' => 'date',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'tanggal_mulai' => 'date',
+            'tanggal_selesai' => 'date',
+        ];
+    }
 
     public function kepegawaian()
     {
@@ -34,6 +38,11 @@ class LaporanKegiatan extends Model
 
     public function perencanaan()
     {
-        return $this->belongsTo(Perencanaan::class);
+        return $this->belongsTo(Perencanaan::class, 'perencanaan_id');
+    }
+
+    public function usulan(): BelongsTo
+    {
+        return $this->belongsTo(Usulan::class, 'usulan_id');
     }
 }

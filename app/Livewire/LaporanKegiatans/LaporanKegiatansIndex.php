@@ -5,6 +5,7 @@ namespace App\Livewire\LaporanKegiatans;
 use App\Models\LaporanKegiatan;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\UsulanPegawai;
 
 class LaporanKegiatansIndex extends Component
 {
@@ -28,9 +29,15 @@ class LaporanKegiatansIndex extends Component
 
     public function approve($id)
     {
-        $laporan = LaporanKegiatan::findOrFail($id);
-        $laporan->update(['status' => 'approved']);
-        session()->flash('success', 'Laporan berhasil disetujui.');
+        // Cari berdasarkan ID di tabel laporan_kegiatans
+        $laporan = LaporanKegiatan::find($id);
+    
+        if ($laporan) {
+            $laporan->update(['status' => 'approved']);
+            session()->flash('success', 'Laporan berhasil disetujui.');
+        } else {
+            session()->flash('error', 'Data laporan tidak ditemukan.');
+        }
     }
 
     public function reject($id)
@@ -52,18 +59,20 @@ class LaporanKegiatansIndex extends Component
 
     public function render()
     {
-        $laporanKegiatans = LaporanKegiatan::query()
-            ->with(['kepegawaian', 'perencanaan'])
-            ->when($this->search, function ($query) {
-                $query->where('judul_laporan', 'like', '%'.$this->search.'%');
-            })
-            ->when($this->filterStatus, function ($query) {
-                $query->where('status', $this->filterStatus);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(5);
+        $approvedUsulanPegawai = UsulanPegawai::query()
+            ->where('status', 'approved')
+            ->with(['kepegawaian', 'usulan'])
+            ->paginate(10);
 
-        return view('livewire.laporan-kegiatans.laporan-kegiatans-index', compact('laporanKegiatans'))
-            ->layout('layouts.app');
+        // Pastikan file_laporan dipetakan di sini
+        $laporanMap = LaporanKegiatan::all()->mapWithKeys(function ($item) {
+            return [$item->usulan_id . '-' . $item->pegawai_id => [
+                'id' => $item->id,
+                'status' => $item->status,
+                'file_laporan' => $item->file_laporan, 
+            ]];
+        })->toArray();
+
+        return view('livewire.laporan-kegiatans.laporan-kegiatans-index', compact('approvedUsulanPegawai', 'laporanMap'));
     }
 }

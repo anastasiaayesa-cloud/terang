@@ -14,17 +14,18 @@ class UsulanPegawai extends Model
 
     protected $fillable = [
         'usulan_id',
+        'perencanaan_id', // Tambahkan baris ini
         'pegawai_id',
         'status',
         'catatan',
-        // penambahan untuk alasan penolakan
         'reject_reason',
         'rejected_by',
         'rejected_at',
     ];
 
-    public function usulan(): BelongsTo
+    public function usulan()
     {
+        // Kita arahkan langsung ke model Usulan menggunakan usulan_id
         return $this->belongsTo(Usulan::class, 'usulan_id');
     }
 
@@ -53,5 +54,11 @@ class UsulanPegawai extends Model
     {
         return $this->hasOne(Persuratan::class, 'pegawai_id', 'pegawai_id')
             ->whereColumn('usulan_id', 'usulan_id');
+    }
+
+    public function perencanaan()
+    {
+        // Pastikan foreign key-nya benar, misal 'perencanaan_id'
+        return $this->belongsTo(Perencanaan::class, 'perencanaan_id'); 
     }
 }

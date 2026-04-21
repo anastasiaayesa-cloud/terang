@@ -168,7 +168,7 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::prefix('laporan-kegiatans')->name('laporan-kegiatans.')->group(function () {
         Route::get('/', LaporanKegiatansIndex::class)->name('index');
-        Route::get('/create', LaporanKegiatanForm::class)->name('create');
+        Route::get('/create/{usulanId?}/{pegawaiId?}', LaporanKegiatanForm::class)->name('create');
         Route::get('/{laporanKegiatan}/edit', LaporanKegiatanForm::class)->name('edit');
     });
 });

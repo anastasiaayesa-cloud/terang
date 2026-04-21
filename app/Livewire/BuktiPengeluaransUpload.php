@@ -26,6 +26,8 @@ class BuktiPengeluaransUpload extends Component
 
     public $perencanaanList = [];
 
+    public $pegawai_id = '';
+
     public function mount($bukti_id = null)
     {
         $this->perencanaanList = Perencanaan::orderBy('nama_komponen', 'asc')->get();

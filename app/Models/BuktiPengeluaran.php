@@ -32,7 +32,7 @@ class BuktiPengeluaran extends Model
 
     public function perencanaan()
     {
-        return $this->belongsTo(Perencanaan::class);
+        return $this->belongsTo(Perencanaan::class, 'perencanaan_id');
     }
 
     public function pegawai()
