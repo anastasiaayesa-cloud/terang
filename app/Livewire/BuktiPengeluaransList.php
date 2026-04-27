@@ -12,29 +12,35 @@ use Livewire\Component;
 class BuktiPengeluaransList extends Component
 {
     public $groupedData = [];
-
     public $grandTotal = 0;
 
     public function mount()
     {
-        // Load all perencanaans with their bukti
-        $perencanaans = Perencanaan::with(['buktiPengeluarans' => function ($q) {
-            $q->orderBy('created_at', 'desc');
-        }])->get();
+        $this->loadData();
+    }
 
-        // Group data and calculate totals
+    public function loadData()
+    {
+        $perencanaans = Perencanaan::with([
+            // Filter usulanPegawais agar hanya mengambil yang statusnya 'approve'
+            'usulan.usulanPegawais' => function ($query) {
+                $query->where('status', 'approved')->with('kepegawaian');
+            },
+            'buktiPengeluarans.kepegawaian'
+        ])->get();
+
         $this->groupedData = $perencanaans->map(function ($perencanaan) {
-            return [
-                'perencanaan' => $perencanaan,
-                'buktiList' => $perencanaan->buktiPengeluarans,
-                'totalNominal' => $perencanaan->buktiPengeluarans->sum('nominal'),
-                'fileCount' => $perencanaan->buktiPengeluarans->count(),
-                'latestUpload' => $perencanaan->buktiPengeluarans->first()?->created_at ?? $perencanaan->created_at,
-            ];
-        })->sortByDesc('latestUpload')
-            ->values();
+            $buktiList = $perencanaan->buktiPengeluarans->sortByDesc('created_at');
 
-        // Calculate grand total
+            return [
+                'perencanaan'  => $perencanaan,
+                'buktiList'    => $buktiList,
+                'totalNominal' => $buktiList->sum('nominal'),
+                'fileCount'    => $buktiList->count(),
+                'latestUpload' => $buktiList->first()?->created_at ?? $perencanaan->created_at,
+            ];
+        })->sortByDesc('latestUpload')->values();
+
         $this->grandTotal = $this->groupedData->sum('totalNominal');
     }
 
@@ -42,7 +48,6 @@ class BuktiPengeluaransList extends Component
     {
         $bukti = BuktiPengeluaran::findOrFail($buktiId);
 
-        // Hapus file dari storage
         if (Storage::disk('public')->exists($bukti->file_path)) {
             Storage::disk('public')->delete($bukti->file_path);
         }
@@ -51,8 +56,8 @@ class BuktiPengeluaransList extends Component
 
         session()->flash('success', 'Bukti pengeluaran berhasil dihapus.');
 
-        // Refresh data
-        $this->mount();
+        // Refresh data menggunakan fungsi loadData agar lebih bersih
+        $this->loadData();
     }
 
     public function render()

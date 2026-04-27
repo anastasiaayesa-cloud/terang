@@ -14,6 +14,7 @@ class BuktiPengeluaran extends Model
     protected $fillable = [
         'perencanaan_id',
         'pegawai_id',
+        'usulan_id',
         'tipe_bukti',
         'file_path',
         'file_name',
@@ -35,7 +36,7 @@ class BuktiPengeluaran extends Model
         return $this->belongsTo(Perencanaan::class, 'perencanaan_id');
     }
 
-    public function pegawai()
+    public function kepegawaian()
     {
         return $this->belongsTo(Kepegawaian::class, 'pegawai_id');
     }
@@ -64,5 +65,10 @@ class BuktiPengeluaran extends Model
             'bukti_lainnya' => '📋',
             default => '📎',
         };
+    }
+
+    public function usulan()
+    {
+        return $this->belongsTo(Usulan::class, 'usulan_id');
     }
 }

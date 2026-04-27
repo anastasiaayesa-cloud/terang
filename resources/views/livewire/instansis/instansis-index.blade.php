@@ -57,17 +57,13 @@
                                     <td class="px-4 py-2 border">{{ $instansi->nama }}</td>
                                     <td class="px-4 py-2 border">{{ $instansi->alamat }}</td>
                                     <td class="px-4 py-2 border">{{ $instansi->telp }}</td>
-                                    <td class="px-4 py-2 border">{{ $instansi->kabupaten->nama }}</td>
-                                    <td class="px-4 py-2 border">
-                                        <a href="{{ route('instansis.edit', $instansi->id) }}"
-                                            class="mr-2 text-blue-600">Edit</a>
-                                    </td>
+                                    
+                                    <td class="px-4 py-2 border">{{ $instansi->kabupaten?->nama ?? 'Tidak ada kabupaten' }}</td>
+                                    
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-4 py-2 border text-center">
-                                        Tidak ada Instansi .
-                                    </td>
+                                    <td colspan="6" class="text-center px-4 py-2 border">Data belum tersedia.</td>
                                 </tr>
                             @endforelse
                         </tbody>

@@ -54,4 +54,10 @@ class Perencanaan extends Model
     {
         return $this->hasMany(UsulanPembayaran::class);
     }
+
+    public function persuratans()
+    {
+        // Gunakan hasMany karena satu perencanaan bisa memiliki lebih dari satu surat/riwayat
+        return $this->hasMany(Persuratan::class, 'perencanaan_id');
+    }
 }

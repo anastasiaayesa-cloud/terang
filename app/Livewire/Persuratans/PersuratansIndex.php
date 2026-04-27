@@ -24,51 +24,43 @@ class PersuratansIndex extends Component
 
     public function render()
     {
-        // 1. Perbaikan pada query Riwayat Persuratan (Ganti 'pegawai' jadi 'pegawais')
-        $persurats = Persuratan::with([
-                'perencanaan',
-                'perencanaan.usulan',
-                'pegawais', // PERBAIKAN: Menggunakan nama relasi BelongsToMany dari Model
-                'kategori'  // Tambahkan eager load kategori jika diperlukan di index
+        // Mengambil data Perencanaan sebagai data utama (Induk)
+        // Kita memuat relasi 'persuratans' untuk mengecek apakah sudah ada surat atau belum
+        $perencanaans = Perencanaan::with([
+                'persuratans', 
+                'persuratans.pegawais', // Untuk daftar pegawai di riwayat
+                'usulan', 
+                'usulan.usulanPegawais' => function ($query) {
+                    $query->where('status', 'approved')->with('kepegawaian');
+                }
             ])
+            ->whereNotNull('usulan_id') // Pastikan hanya perencanaan yang punya usulan
+            ->whereHas('usulan.usulanPegawais', function ($query) {
+                $query->where('status', 'approved'); // Hanya yang pegawainya sudah disetujui
+            })
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    // Cari berdasarkan data surat
-                    $q->where('nama_surat', 'like', '%'.$this->search.'%')
-                      ->orWhere('perihal', 'like', '%'.$this->search.'%')
-                      
                     // Cari di tabel perencanaan
-                    ->orWhereHas('perencanaan', function ($qq) {
-                        $qq->where('kode', 'like', '%'.$this->search.'%')
-                            ->orWhere('nama_komponen', 'like', '%'.$this->search.'%')
-                            ->orWhereHas('usulan', function ($qqq) {
-                                // PERBAIKAN TYPO: nama_kegatan -> nama_kegiatan (sesuaikan database Anda)
-                                $qqq->where('nama_kegatan', 'like', '%'.$this->search.'%');
-                            });
+                    $q->where('kode', 'like', '%' . $this->search . '%')
+                    ->orWhere('nama_komponen', 'like', '%' . $this->search . '%')
+                    
+                    // Cari di tabel usulan
+                    ->orWhereHas('usulan', function ($qq) {
+                        $qq->where('nama_kegiatan', 'like', '%' . $this->search . '%');
                     })
                     
-                    // PERBAIKAN: Cari di nama pegawai melalui relasi PIVOT (pegawais)
-                    ->orWhereHas('pegawais', function ($qq) {
-                        $qq->where('nama', 'like', '%'.$this->search.'%');
+                    // Cari berdasarkan data surat (jika sudah ada)
+                    ->orWhereHas('persuratans', function ($qq) {
+                        $qq->where('nama_surat', 'like', '%' . $this->search . '%')
+                        ->orWhere('perihal', 'like', '%' . $this->search . '%');
                     });
                 });
             })
-            ->orderBy('tanggal_upload', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // 2. Query Perencanaan yang siap dibuatkan surat (Pegawai status Approved)
-        $perencanaansSiapSurat = Perencanaan::whereNotNull('usulan_id')
-            ->whereHas('usulan.usulanPegawais', function ($query) {
-                $query->where('status', 'approved');
-            })
-            ->with(['usulan', 'usulan.usulanPegawais' => function ($query) {
-                $query->where('status', 'approved')->with('kepegawaian');
-            }])
-            ->get();
-
         return view('livewire.persuratans.persuratans-index', [
-            'persurats' => $persurats,
-            'perencanaansSiapSurat' => $perencanaansSiapSurat,
+            'perencanaans' => $perencanaans, // Ini variabel yang dipanggil di Blade @forelse
         ]);
     }
 
