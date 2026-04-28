@@ -57,8 +57,11 @@
                                     <td class="px-4 py-2 border">{{ $instansi->nama }}</td>
                                     <td class="px-4 py-2 border">{{ $instansi->alamat }}</td>
                                     <td class="px-4 py-2 border">{{ $instansi->telp }}</td>
-                                    
                                     <td class="px-4 py-2 border">{{ $instansi->kabupaten?->nama ?? 'Tidak ada kabupaten' }}</td>
+                                    <td class="px-4 py-2 border">
+                                        <a href="{{ route('instansis.edit', $instansi->id) }}"
+                                        class="mr-2 text-blue-600">Edit</a>
+                                    </td>
                                     
                                 </tr>
                             @empty

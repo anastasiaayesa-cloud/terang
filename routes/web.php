@@ -159,6 +159,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('instansis')->name('instansis.')->group(function () {
         Route::get('/', InstansisIndex::class)->name('index');
         Route::get('/create', InstansisForm::class)->name('create');
+        Route::get('/{instansi}/edit', InstansisForm::class)->name('edit');
     });
 
     /*

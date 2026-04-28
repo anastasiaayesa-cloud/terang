@@ -52,7 +52,7 @@
                                     <td class="px-4 py-2 border">{{ $kepegawaian->hp }}</td>
                                     <td class="px-4 py-2 border">
                                         <a href="{{ route('kepegawaians.edit', $kepegawaian->id) }}"
-    class="mr-2 text-blue-600">Edit</a>
+                                        class="mr-2 text-blue-600">Edit</a>
                                     </td>
                                 </tr>
                             @empty

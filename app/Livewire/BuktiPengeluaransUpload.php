@@ -105,7 +105,7 @@ class BuktiPengeluaransUpload extends Component
             BuktiPengeluaran::create([
                 'perencanaan_id' => $this->perencanaan_id,
                 'usulan_id'      => $this->usulan_id,
-                'pegawai_id'     => $this->pegawai_id,
+                'pegawai_id'     => $this->pegawai_id ?: null,
                 'tipe_bukti'     => $fileData['tipe_bukti'],
                 'file_path'      => $filePath,
                 'file_name'      => $file->getClientOriginalName(),

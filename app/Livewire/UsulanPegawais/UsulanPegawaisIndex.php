@@ -104,6 +104,10 @@ class UsulanPegawaisIndex extends Component
                     $q->where('status', $this->filterStatus);
                 });
             })
+            ->whereHas('perencanaans', function ($q) {
+                $q->whereNotNull('usulan_id'); // Usulan sudah masuk ke perencanaan
+            })
+
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

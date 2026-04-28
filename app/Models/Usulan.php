@@ -56,7 +56,7 @@ class Usulan extends Model
         })->distinct();
     }
 
-    public function persuratan()
+    public function persuratans()
     {
         return $this->hasMany(Persuratan::class, 'usulan_id');
     }

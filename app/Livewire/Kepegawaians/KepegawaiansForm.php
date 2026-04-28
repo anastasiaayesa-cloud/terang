@@ -59,7 +59,7 @@ class KepegawaiansForm extends Component
     {
         // dropdown
         $this->pangkatList = Pangkat::orderBy('nama')->get();
-        // $this->instansiList = Instansi::orderBy('nama_instansi')->get();
+        $this->instansiList = Instansi::orderBy('nama')->get();
         $this->bankList = Bank::orderBy('nama')->get();
         $this->pendidikanList = Pendidikan::orderBy('nama')->get();
 

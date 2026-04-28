@@ -22,19 +22,14 @@ class InstansisForm extends Component
 
     public $kabupatenList = [];
 
-    public function mount($instansi_id = null)
+    public function mount($instansi = null)
     {
         $this->kabupatenList = Kabupaten::orderBy('nama')->get();
-
-        if ($instansi_id) {
-            $this->instansi_id = $instansi_id;
-
-            $instansi = Instansi::findOrFail($instansi_id);
-
-            $this->nama = $instansi->nama;
-            $this->alamat = $instansi->alamat;
-            $this->telp = $instansi->telp;
-            $this->kabupaten_id = $instansi->kabupaten_id;
+    
+        if ($instansi) {
+            $this->instansi = Instansi::findOrFail($instansi);
+            $this->fill($this->instansi->only(['nama', 'alamat', 'telp']));
+            $this->kabupaten_id = $this->instansi->kabupaten_id;
         }
     }
 
