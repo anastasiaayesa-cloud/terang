@@ -71,4 +71,9 @@ class BuktiPengeluaran extends Model
     {
         return $this->belongsTo(Usulan::class, 'usulan_id');
     }
+
+    public function keuangan()
+    {
+        return $this->hasOne(Keuangan::class, 'bukti_pengeluaran_id');
+    }
 }

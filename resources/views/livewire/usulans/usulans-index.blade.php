@@ -34,7 +34,15 @@
                             @forelse ($usulans as $usulan)
                                 <tr wire:key="{{ $usulan->id }}">
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $usulan->nama_kegiatan }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $usulan->tanggal_kegiatan->format('d/m/Y') }}</td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ \Carbon\Carbon::parse($usulan->tanggal_kegiatan)->format('d/m/Y') }}
+                                        @if($usulan->sampai_tanggal)
+                                            <span class="text-gray-400 mx-1">s/d</span>
+                                            {{ \Carbon\Carbon::parse($usulan->sampai_tanggal)->format('d/m/Y') }}
+                                        @endif
+                                    </td>
+                                    
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $usulan->lokasi_kegiatan }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('usulans.edit', $usulan->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">✏️</a>
@@ -43,7 +51,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Tidak ada data usulan.</td>
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">Tidak ada data usulan.</td>
                                 </tr>
                             @endforelse
                         </tbody>

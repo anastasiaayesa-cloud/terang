@@ -25,9 +25,15 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Tanggal Kegiatan</label>
+                                <label class="block text-sm font-medium text-gray-700">Tanggal Mulai Kegiatan</label>
                                 <input type="date" wire:model="tanggal_kegiatan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                                 @error('tanggal_kegiatan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Tanggal Berakhir Kegiatan</label>
+                                <input type="date" wire:model="sampai_tanggal" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                @error('sampai_tanggal') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>

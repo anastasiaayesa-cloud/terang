@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\KwitansiController;
 use App\Livewire\BuktiPengeluaransList;
 use App\Livewire\BuktiPengeluaransUpload;
 use App\Livewire\DaftarKegiatans\DaftarKegiatansIndex;
@@ -12,11 +11,14 @@ use App\Livewire\Instansis\InstansisForm;
 use App\Livewire\Instansis\InstansisIndex;
 use App\Livewire\Kepegawaians\KepegawaiansForm;
 use App\Livewire\Kepegawaians\KepegawaiansIndex;
+use App\Livewire\Keuangans\KeuanganForm;
+use App\Livewire\Keuangans\KeuangansBayar;
+// use App\Livewire\PengajuanPencairanDetail;
+// use App\Livewire\PengajuanPencairanForm;
+// use App\Livewire\PengajuanPencairansIndex;
+use App\Livewire\Keuangans\KeuangansIndex;
 use App\Livewire\LaporanKegiatans\LaporanKegiatanForm;
 use App\Livewire\LaporanKegiatans\LaporanKegiatansIndex;
-use App\Livewire\PengajuanPencairanDetail;
-use App\Livewire\PengajuanPencairanForm;
-use App\Livewire\PengajuanPencairansIndex;
 use App\Livewire\Perencanaans\PerencanaanForm;
 use App\Livewire\Perencanaans\PerencanaansIndex;
 use App\Livewire\Persuratans\PersuratansForm;
@@ -103,12 +105,10 @@ Route::middleware(['auth'])->group(function () {
     | KEUANGAN - Pengajuan Pencairan Dana
     |--------------------------------------------------------------------------
     */
-    Route::prefix('keuangan/pengajuan-pencairans')->name('keuangan.pengajuan-pencairans.')->group(function () {
-        Route::get('/', PengajuanPencairansIndex::class)->name('index');
-        Route::get('/create', PengajuanPencairanForm::class)->name('create');
-        Route::get('/{id}', PengajuanPencairanDetail::class)->name('show');
-        Route::get('/{id}/edit', PengajuanPencairanForm::class)->name('edit');
-        Route::get('/{id}/print/{jenis}', KwitansiController::class.'@print')->name('print');
+    Route::prefix('keuangans')->name('keuangans.')->group(function () {
+        Route::get('/', KeuangansIndex::class)->name('index');
+        Route::get('/create', KeuanganForm::class)->name('create');
+        Route::get('/{usulan_id}/{pegawai_id}/bayar', KeuangansBayar::class)->name('bayar');
     });
 
     /*

@@ -112,7 +112,7 @@
                                             <div class="text-xs text-blue-600">{{ $bukti->tipe_bukti_label }}</div>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <div class="text-sm text-gray-700">{{ $bukti->pegawai->nama ?? '-' }}</div>
+                                            <div class="text-sm text-gray-700">{{ $bukti->kepegawaian->nama ?? '-' }}</div>
                                             <div class="text-xs text-gray-400">{{ $bukti->tanggal_bukti ? $bukti->tanggal_bukti->format('d M Y') : '' }}</div>
                                         </td>
                                         <td class="px-4 py-3 text-right font-bold text-sm text-gray-900">

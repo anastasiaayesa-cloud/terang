@@ -17,6 +17,7 @@ class Usulan extends Model
     protected $fillable = [
         'nama_kegiatan',
         'tanggal_kegiatan',
+        'sampai_tanggal',
         'lokasi_kegiatan',
         'deskripsi',
         'catatan',
@@ -24,6 +25,7 @@ class Usulan extends Model
 
     protected $casts = [
         'tanggal_kegiatan' => 'date',
+        'sampai_tanggal' => 'date',
     ];
 
     protected static function booted(): void
@@ -59,5 +61,10 @@ class Usulan extends Model
     public function persuratans()
     {
         return $this->hasMany(Persuratan::class, 'usulan_id');
+    }
+
+    public function keuangans()
+    {
+        return $this->hasMany(Keuangan::class, 'usulan_id');
     }
 }

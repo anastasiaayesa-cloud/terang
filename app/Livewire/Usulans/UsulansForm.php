@@ -15,6 +15,8 @@ class UsulansForm extends Component
 
     public $tanggal_kegiatan;
 
+    public $sampai_tanggal;
+
     public $lokasi_kegiatan;
 
     public $deskripsi;
@@ -26,6 +28,7 @@ class UsulansForm extends Component
             $this->fill($this->usulan->only([
                 'nama_kegiatan',
                 'tanggal_kegiatan',
+                'sampai_tanggal',
                 'lokasi_kegiatan',
                 'deskripsi',
             ]));
@@ -37,6 +40,7 @@ class UsulansForm extends Component
         return [
             'nama_kegiatan' => 'required|string|max:255',
             'tanggal_kegiatan' => 'required|date',
+            'sampai_tanggal' => 'required|date',
             'lokasi_kegiatan' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
         ];
