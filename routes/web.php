@@ -13,10 +13,11 @@ use App\Livewire\Kepegawaians\KepegawaiansForm;
 use App\Livewire\Kepegawaians\KepegawaiansIndex;
 use App\Livewire\Keuangans\KeuanganForm;
 use App\Livewire\Keuangans\KeuangansBayar;
+use App\Livewire\Keuangans\KeuangansIndex;
 // use App\Livewire\PengajuanPencairanDetail;
 // use App\Livewire\PengajuanPencairanForm;
 // use App\Livewire\PengajuanPencairansIndex;
-use App\Livewire\Keuangans\KeuangansIndex;
+use App\Livewire\Keuangans\KeuangansPreview;
 use App\Livewire\LaporanKegiatans\LaporanKegiatanForm;
 use App\Livewire\LaporanKegiatans\LaporanKegiatansIndex;
 use App\Livewire\Perencanaans\PerencanaanForm;
@@ -109,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', KeuangansIndex::class)->name('index');
         Route::get('/create', KeuanganForm::class)->name('create');
         Route::get('/{usulan_id}/{pegawai_id}/bayar', KeuangansBayar::class)->name('bayar');
+        Route::get('/{usulan_id}/{pegawai_id}/preview', KeuangansPreview::class)->name('preview');
     });
 
     /*

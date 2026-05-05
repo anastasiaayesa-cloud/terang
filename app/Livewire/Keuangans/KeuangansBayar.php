@@ -22,13 +22,27 @@ class KeuangansBayar extends Component
 
     public $buktiPengeluarans = [];
 
+    public $manualPayments = [];
+
+    public $allPayments = [];
+
     public $showModal = false;
+
+    public $showModalManual = false;
 
     public $selectedBuktiId = null;
 
     public $nominalBayar = '';
 
     public $alasan = '';
+
+    public $manualPerincian = '';
+
+    public $manualNominal = '';
+
+    public $manualJumlah = 1;
+
+    public $manualJenis = 'Biaya Perjalanan Dinas';
 
     public function mount($usulan_id, $pegawai_id)
     {
@@ -49,6 +63,44 @@ class KeuangansBayar extends Component
             ->where('pegawai_id', $this->pegawai_id)
             ->with('keuangan')
             ->get();
+
+        $this->manualPayments = Keuangan::where('usulan_id', $this->usulan_id)
+            ->where('pegawai_id', $this->pegawai_id)
+            ->whereNull('bukti_pengeluaran_id')
+            ->get();
+
+        // Combine both into allPayments
+        $combined = collect();
+
+        // Add bukti pengeluarans
+        foreach ($this->buktiPengeluarans as $bukti) {
+            $combined->push([
+                'jenis' => 'bukti',
+                'id' => $bukti->id,
+                'keterangan' => $bukti->keterangan,
+                'nominal' => $bukti->nominal,
+                'uang_dibayarkan' => $bukti->keuangan ? $bukti->keuangan->uang_dibayarkan : null,
+                'jumlah' => 1,
+                'status' => $bukti->keuangan ? $bukti->keuangan->status : 'pending',
+                'keuangan' => $bukti->keuangan,
+            ]);
+        }
+
+        // Add manual payments
+        foreach ($this->manualPayments as $manual) {
+            $combined->push([
+                'jenis' => 'manual',
+                'id' => $manual->id,
+                'keterangan' => $manual->perincian_bayar,
+                'nominal' => $manual->nominal,
+                'uang_dibayarkan' => $manual->uang_dibayarkan,
+                'jumlah' => $manual->jumlah,
+                'status' => $manual->status,
+                'keuangan' => $manual,
+            ]);
+        }
+
+        $this->allPayments = $combined;
     }
 
     public function openModal($buktiId)
@@ -70,7 +122,56 @@ class KeuangansBayar extends Component
         $this->selectedBuktiId = null;
     }
 
-    public function bayarfull($buktiId)
+    public function openModalManual()
+    {
+        $this->resetManualFields();
+        $this->showModalManual = true;
+    }
+
+    public function resetManualFields()
+    {
+        $this->manualPerincian = '';
+        $this->manualNominal = '';
+        $this->manualJumlah = 1;
+        $this->manualJenis = 'Biaya Perjalanan Dinas';
+    }
+
+    public function closeModalManual()
+    {
+        $this->showModalManual = false;
+    }
+
+    public function saveManual()
+    {
+        $this->validate([
+            'manualPerincian' => 'required|string',
+            'manualNominal' => 'required|numeric|min:0',
+            'manualJumlah' => 'required|integer|min:1',
+        ]);
+
+        $nominalManual = (float) $this->manualNominal;
+        $jumlahManual = (int) $this->manualJumlah;
+        $totalManual = $nominalManual * $jumlahManual;
+
+        Keuangan::create([
+            'usulan_id' => $this->usulan_id,
+            'pegawai_id' => $this->pegawai_id,
+            'bukti_pengeluaran_id' => null,
+            'perincian_bayar' => $this->manualPerincian,
+            'nominal' => $nominalManual,
+            'jumlah' => $jumlahManual,
+            'total' => $totalManual,
+            'uang_dibayarkan' => $totalManual,
+            'jenis' => $this->manualJenis,
+            'status' => 'full',
+        ]);
+
+        $this->closeModalManual();
+        $this->loadData();
+        session()->flash('success', 'Pembayaran manual berhasil ditambahkan.');
+    }
+
+    public function bayaselfull($buktiId)
     {
         $bukti = BuktiPengeluaran::find($buktiId);
         $nominalBukti = $bukti->nominal ?? 0;
@@ -103,7 +204,7 @@ class KeuangansBayar extends Component
         session()->flash('success', 'Pembayaran bukti berhasil dilakukan.');
     }
 
-    public function bayarsebagian()
+    public function bayaselsebagian()
     {
         $this->validate([
             'nominalBayar' => 'required|numeric|min:0',
@@ -142,24 +243,6 @@ class KeuangansBayar extends Component
         $this->closeModal();
         $this->loadData();
         session()->flash('success', 'Pembayaran sebagian berhasil dilakukan.');
-    }
-
-    public function getStatusForBukti($bukti)
-    {
-        if ($bukti->keuangan) {
-            return $bukti->keuangan->status;
-        }
-
-        return 'pending';
-    }
-
-    public function getUangDibayarkanForBukti($bukti)
-    {
-        if ($bukti->keuangan) {
-            return $bukti->keuangan->uang_dibayarkan;
-        }
-
-        return null;
     }
 
     public function render()
