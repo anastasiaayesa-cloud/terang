@@ -57,7 +57,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">Lokasi</span>
-                    <span class="font-medium text-gray-900">{{ $usulan->lokasi_kegiatann ?? '-' }}</span>
+                    <span class="font-medium text-gray-900">{{ $usulan->lokasi_kegiatan ?? '-' }}</span>
                 </div>
             </div>
         </div>
@@ -66,16 +66,42 @@
     <!-- Tabel Editable -->
     <div class="mt-6 bg-white rounded-lg shadow border">
         <div class="p-4 border-b flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-700">📂 Edit Pembayaran</h3>
-            <button 
-                wire:click="saveAll"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center"
-            >
-                <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                Simpan Semua
-            </button>
+            <div class="flex items-center gap-4">
+                <h3 class="text-lg font-semibold text-gray-700">📂 Edit Pembayaran</h3>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm font-medium text-gray-700">Tanggal Kwitansi:</label>
+                    <input 
+                        type="date" 
+                        wire:model="tanggal_kwitansi"
+                        wire:change="simpanTanggalKwitansi"
+                        class="border-gray-300 rounded-lg text-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                    @error('tanggal_kwitansi')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a 
+                    href="{{ route('keuangans.preview.cetak', ['usulan_id' => $usulan_id, 'pegawai_id' => $pegawai_id]) }}"
+                    target="_blank"
+                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Cetak Kwitansi
+                </a>
+                <button 
+                    wire:click="saveAll"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm inline-flex items-center"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Simpan Semua
+                </button>
+            </div>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">

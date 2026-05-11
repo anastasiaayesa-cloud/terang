@@ -15,11 +15,12 @@ class Keuangan extends Model
         'nominal',
         'jumlah',
         'total',
-        'jenis', // Akan menyimpan string: "KEDUANYA", dll.
+        'jenis',
         'status',
         'alasan_penolakan',
         'uang_dibayarkan',
         'bukti_pengeluaran_id',
+        'tanggal_kwitansi',
     ];
 
     // Pastikan casts hanya untuk angka

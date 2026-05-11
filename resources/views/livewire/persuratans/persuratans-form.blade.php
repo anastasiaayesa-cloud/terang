@@ -80,10 +80,16 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="md:col-span-2">
-                                <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Nama / Nomor Surat</label>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Nama Surat <span class="text-red-500">*</span></label>
                                 <input type="text" wire:model="inputs.{{ $key }}.nama_surat" class="w-full border-gray-300 rounded-lg text-sm p-2.5 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
                                 @error('inputs.'.$key.'.nama_surat') <span class="text-red-500 text-[10px]">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Nomor Surat <span class="text-red-500">*</span></label>
+                                <input type="text" wire:model="inputs.{{ $key }}.nomor_surat" class="w-full border-gray-300 rounded-lg text-sm p-2.5 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+                                @error('inputs.'.$key.'.nomor_surat') <span class="text-red-500 text-[10px]">{{ $message }}</span> @enderror
                             </div>
 
                             <div>

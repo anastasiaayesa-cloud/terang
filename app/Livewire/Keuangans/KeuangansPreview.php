@@ -22,6 +22,8 @@ class KeuangansPreview extends Component
 
     public $payments = [];
 
+    public $tanggal_kwitansi = '';
+
     public $jenisOptions = [
         'Biaya Perjalanan Dinas',
         'Pengeluaran Rill',
@@ -84,6 +86,31 @@ class KeuangansPreview extends Component
         }
 
         $this->payments = $combined->values()->all();
+
+        $firstKeuangan = Keuangan::where('usulan_id', $this->usulan_id)
+            ->where('pegawai_id', $this->pegawai_id)
+            ->first();
+        $this->tanggal_kwitansi = $firstKeuangan?->tanggal_kwitansi ?? '';
+
+        return $this->payments;
+    }
+
+    public function simpanTanggalKwitansi()
+    {
+        if (empty($this->tanggal_kwitansi)) {
+            return;
+        }
+
+        $keuangans = Keuangan::where('usulan_id', $this->usulan_id)
+            ->where('pegawai_id', $this->pegawai_id)
+            ->get();
+
+        foreach ($keuangans as $keuangan) {
+            $keuangan->tanggal_kwitansi = $this->tanggal_kwitansi;
+            $keuangan->save();
+        }
+
+        session()->flash('success', 'Tanggal Kwitansi berhasil disimpan.');
     }
 
     public function saveAll()
@@ -91,6 +118,9 @@ class KeuangansPreview extends Component
         $this->validate([
             'payments.*.perincian_bayar' => 'required|string',
             'payments.*.jenis_pembayaran' => 'required|string|in:Biaya Perjalanan Dinas,Pengeluaran Rill,Keduanya',
+            'tanggal_kwitansi' => 'required|date',
+        ], [
+            'tanggal_kwitansi.required' => 'Tanggal Kwitansi wajib diisi.',
         ]);
 
         foreach ($this->payments as $payment) {

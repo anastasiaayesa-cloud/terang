@@ -19,6 +19,7 @@ class Persuratan extends Model
         'perencanaan_id',
         'persuratan_kategori_id',
         'nama_surat',
+        'nomor_surat',
         'file_pdf',
         'tanggal_upload',
         'perihal',

@@ -171,7 +171,7 @@ class KeuangansBayar extends Component
         session()->flash('success', 'Pembayaran manual berhasil ditambahkan.');
     }
 
-    public function bayaselfull($buktiId)
+    public function bayarfull($buktiId)
     {
         $bukti = BuktiPengeluaran::find($buktiId);
         $nominalBukti = $bukti->nominal ?? 0;
@@ -204,7 +204,7 @@ class KeuangansBayar extends Component
         session()->flash('success', 'Pembayaran bukti berhasil dilakukan.');
     }
 
-    public function bayaselsebagian()
+    public function bayarsebagian()
     {
         $this->validate([
             'nominalBayar' => 'required|numeric|min:0',
