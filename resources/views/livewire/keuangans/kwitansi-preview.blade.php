@@ -36,8 +36,8 @@ function angkaKeTerbilang($angka)
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: Arial, Helvetica, sans-serif; 
-            font-size: 10pt; 
-            line-height: 1.4; 
+            font-size: 12pt; 
+            line-height: 1.0; 
             color: #000; 
             padding: 30px; 
         }
@@ -83,7 +83,7 @@ function angkaKeTerbilang($angka)
         @media print {
             body { padding: 0; }
             .no-print { display: none; }
-            @page { margin: 1cm; }
+            @page { margin: 2cm 2cm 2cm 3cm; }
         }
     </style>
 </head>
@@ -93,10 +93,10 @@ function angkaKeTerbilang($angka)
         <img src="{{ public_path('kop-surat.jpg') }}" alt="Kop Surat" style="max-width: 100%; height: auto;">
     </div>
 
-    <div class="section-title">RINCIAN BIAYA PERJALANAN DINAS</div>
+    <div class="section-title">RINCIAN BIAYA PERJALANAN DINAS</div><br>
 
     <div class="text-center" style="margin-bottom: 15px;">
-        <p><strong>{{ $usulan->nama_kegiatan ?? '-' }}</strong> {{ $usulan->lokasi_kegiatan ? ' di ' . $usulan->lokasi_kegiatan : '' }}</p>
+        <p>{{ $usulan->nama_kegiatan ?? '-' }} {{ $usulan->lokasi_kegiatan ? ' di ' . $usulan->lokasi_kegiatan : '' }}</p>
         <p>Pada tanggal 
             @php
                 \Carbon\Carbon::setLocale('id');
@@ -127,10 +127,10 @@ function angkaKeTerbilang($angka)
     <table class="table-border">
         <thead>
             <tr>
-                <th style="width: 5%;">No.</th>
-                <th style="width: 50%;">Perincian Biaya</th>
-                <th style="width: 30%;">Jumlah</th>
-                <th style="width: 15%;">Keterangan</th>
+                <td style="width: 5%;">No.</td>
+                <td style="width: 50%;">Perincian Biaya</td>
+                <td style="width: 30%;">Jumlah</td>
+                <td style="width: 15%;">Keterangan</td>
             </tr>
         </thead>
         <tbody>
@@ -145,38 +145,38 @@ function angkaKeTerbilang($angka)
                     <td class="text-center">{{ $no++ }}</td>
                     <td>
                         {{ $payment['perincian_bayar'] ?? '-' }}
-                        @if($qty > 1)
+                        @if(($payment['tipe'] ?? 'bukti') === 'manual')
                             <div style="margin-top: 4px; display: flex; justify-content: space-between; font-size: 9pt;">
                                 <div class="currency-flex" style="width: 45%;">
-                                    <span>Rp.</span><span>{{ number_format($price, 0, ',', '.') }}</span>
+                                    <span>Rp.</span><span>{{ number_format($price, 2, ',', '.') }}</span>
                                 </div>
-                                <div style="width: 45%; text-align: right;">X {{ $qty }} {{ $payment['satuan'] ?? 'hr' }}</div>
+                                <div style="width: 45%; text-align: right;">X {{ $qty }}</div>
                             </div>
                         @endif
                     </td>
                     <td>
                         <div class="currency-flex">
-                            <span>Rp.</span><span>{{ number_format($subtotal, 0, ',', '.') }}</span>
+                            <span>Rp.</span><span>{{ number_format($subtotal, 2, ',', '.') }}</span>
                         </div>
                     </td>
                     <td>{{ $payment['keterangan'] ?? '' }}</td>
                 </tr>
             @endforeach
-            <tr class="font-bold">
+            <tr>
                 <td></td>
                 <td class="text-center">Jumlah</td>
                 <td>
                     <div class="currency-flex">
-                        <span>Rp.</span><span>{{ number_format($grandTotal, 0, ',', '.') }}</span>
+                        <span>Rp.</span><span>{{ number_format($grandTotal, 2, ',', '.') }}</span>
                     </div>
                 </td>
                 <td></td>
             </tr>
             <tr>
                 <td colspan="4">
-                    <strong>Terbilang : </strong>  
-                    <span class="font-bold uppercase" style="font-style: italic;">
-                        {{ angkaKeTerbilang($grandTotal) }} RUPIAH
+                    Terbilang :  
+                    <span class="font-bold" style="font-style: italic; ">
+                        {{ ucwords(angkaKeTerbilang($grandTotal)) }} Rupiah
                     </span>
                 </td>
             </tr>
@@ -187,23 +187,23 @@ function angkaKeTerbilang($angka)
         <tr>
             <td style="width: 50%;">
                 Telah dibayar sejumlah<br>
-                <strong>Rp. {{ number_format($grandTotal, 0, ',', '.') }}</strong><br>
+                Rp. {{ number_format($grandTotal, 2, ',', '.') }}<br>
                 Bendahara Pengeluaran,
             </td>
             <td style="width: 50%; padding-left: 60px;">
                 Bintan, {{ $tanggal_kwitansi ? \Carbon\Carbon::parse($tanggal_kwitansi)->isoFormat('D MMMM YYYY') : '-' }}<br>
                 Telah menerima uang sebesar,<br>
-                <strong>Rp. {{ number_format($grandTotal, 0, ',', '.') }}</strong><br>
+                Rp. {{ number_format($grandTotal, 2, ',', '.') }}<br>
                 Yang menerima uang,
             </td>
         </tr>
         <tr>
             <td style="padding-top: 55px;">
-                <u><strong>{{ $pejabat['bendahara_nama'] }}</strong></u><br>
+                {{ $pejabat['bendahara_nama'] }}<br>
                 NIP. {{ $pejabat['bendahara_nip'] }}
             </td>
             <td style="padding-top: 55px; padding-left: 60px;">
-                <u><strong>{{ $kepegawaian->nama ?? '-' }}</strong></u><br>
+                {{ $kepegawaian->nama ?? '-' }}<br>
                 NIP. {{ $kepegawaian->nip ?? '-' }}
             </td>
         </tr>
@@ -212,18 +212,18 @@ function angkaKeTerbilang($angka)
     <div style="border-top: 1px dashed #000; margin: 15px 0;"></div>
 
     <table class="ttd-table">
-        <tr><td colspan="2" class="text-center font-bold" style="padding-bottom: 10px;">PERHITUNGAN SPPD RAMPUNG</td></tr>
+        <tr><td colspan="2" class="text-center" style="padding-bottom: 10px;">PERHITUNGAN SPPD RAMPUNG</td></tr>
         <tr>
             <td style="width: 55%;">
                 <table style="width: 100%;">
-                    <tr><td width="45%">Ditetapkan sejumlah</td><td width="5%">:</td><td>Rp. {{ number_format($grandTotal, 0, ',', '.') }}</td></tr>
-                    <tr><td>Yang telah dibayarkan semula</td><td>:</td><td>Rp. {{ number_format($grandTotal, 0, ',', '.') }}</td></tr>
+                    <tr><td width="45%">Ditetapkan sejumlah</td><td width="5%">:</td><td>Rp. {{ number_format($grandTotal, 2, ',', '.') }}</td></tr>
+                    <tr><td>Yang telah dibayarkan semula</td><td>:</td><td>Rp. {{ number_format($grandTotal, 2, ',', '.') }}</td></tr>
                     <tr><td>Sisa kurang/lebih</td><td>:</td><td>NIHIL</td></tr>
                 </table>
             </td>
             <td style="width: 45%; text-align: center;">
                 Pejabat Pembuat Komitmen,<br><br><br><br><br>
-                <u><strong>{{ $pejabat['ppk_nama'] }}</strong></u><br>
+                <u>{{ $pejabat['ppk_nama'] }}</u><br>
                 NIP. {{ $pejabat['ppk_nip'] }}
             </td>
         </tr>
@@ -236,12 +236,12 @@ function angkaKeTerbilang($angka)
         <img src="{{ public_path('kop-surat.jpg') }}" alt="Kop Surat" style="max-width: 100%; height: auto;">
     </div>
 
-    <div class="section-title">DAFTAR PENGELUARAN RIIL</div>
+    <div class="section-title">DAFTAR PENGELUARAN RIIL</div><br>
 
     <div style="margin-bottom: 15px;">
         <p>Yang bertanda tangan di bawah ini :</p>
         <table style="width: auto; margin-top: 5px; border: none;">
-            <tr><td width="150">Nama</td><td width="10">:</td><td class="font-bold">{{ $kepegawaian->nama ?? '-' }}</td></tr>
+            <tr><td width="150">Nama</td><td width="10">:</td><td>{{ $kepegawaian->nama ?? '-' }}</td></tr>
             <tr><td>NIP</td><td>:</td><td>{{ $kepegawaian->nip ?? '-' }}</td></tr>
             <tr><td>Pangkat / Golongan</td><td>:</td><td>{{ $kepegawaian->pangkat->nama ?? '-' }}</td></tr>
             <tr><td>Jabatan</td><td>:</td><td>{{ $kepegawaian->jabatan ?? '-' }}</td></tr>
@@ -257,30 +257,37 @@ function angkaKeTerbilang($angka)
 
     <table class="table-border" style="margin-top: 10px;">
         <thead>
-            <tr>
+            <tr style="font-style: italic;">
                 <th style="width: 8%;">No</th>
                 <th style="text-align: center;">U R A I A N &nbsp; K E G I A T A N</th>
                 <th style="width: 35%; text-align: center;">J U M L A H</th>
             </tr>
         </thead>
         <tbody>
-            @php $no_riil = 1; @endphp
+            @php
+                $no_riil = 1;
+                $grandTotalRiil = collect($payments)
+                    ->filter(fn($p) => in_array($p['jenis'], ['Pengeluaran Rill', 'Keduanya']))
+                    ->sum(fn($p) => $p['nominal'] * ($p['jumlah'] ?? 1));
+            @endphp
             @foreach ($payments as $payment)
-            <tr>
-                <td class="text-center">{{ $no_riil++ }}</td>
-                <td>{{ $payment['perincian_bayar'] }}</td>
-                <td>
-                    <div class="currency-flex">
-                        <span>Rp.</span><span>{{ number_format($payment['nominal'] * ($payment['jumlah'] ?? 1), 0, ',', '.') }}</span>
-                    </div>
-                </td>
-            </tr>
+                @if(in_array($payment['jenis'], ['Pengeluaran Rill', 'Keduanya']))
+                <tr>
+                    <td class="text-center">{{ $no_riil++ }}</td>
+                    <td>{{ $payment['perincian_bayar'] }}</td>
+                    <td>
+                        <div class="currency-flex">
+                            <span>Rp.</span><span>{{ number_format($payment['nominal'] * ($payment['jumlah'] ?? 1), 2, ',', '.') }}</span>
+                        </div>
+                    </td>
+                </tr>
+                @endif
             @endforeach
-            <tr class="font-bold">
+            <tr class="font-bold" style="font-style: italic;">
                 <td colspan="2" class="text-center">J U M L A H</td>
                 <td>
                     <div class="currency-flex">
-                        <span>Rp.</span><span>{{ number_format($grandTotal, 0, ',', '.') }}</span>
+                        <span>Rp.</span><span>{{ number_format($grandTotalRiil, 2, ',', '.') }}</span>
                     </div>
                 </td>
             </tr>
@@ -298,13 +305,13 @@ function angkaKeTerbilang($angka)
             <td style="width: 50%;">
                 Mengetahui / Menyetujui<br>
                 Pejabat Pembuat Komitmen,<br><br><br><br><br>
-                <u><strong>{{ $pejabat['ppk_nama'] }}</strong></u><br>
+                {{ $pejabat['ppk_nama'] }}<br>
                 NIP. {{ $pejabat['ppk_nip'] }}
             </td>
             <td style="width: 50%; padding-left: 60px;">
                 Bintan, {{ $tanggal_kwitansi ? \Carbon\Carbon::parse($tanggal_kwitansi)->isoFormat('D MMMM YYYY') : '-' }}<br>
                 Pelaksana SPD,<br><br><br><br><br>
-                <u><strong>{{ $kepegawaian->nama ?? '-' }}</strong></u><br>
+                {{ $kepegawaian->nama ?? '-' }}<br>
                 NIP. {{ $kepegawaian->nip ?? '-' }}
             </td>
         </tr>
@@ -325,7 +332,7 @@ function angkaKeTerbilang($angka)
             <tr>
                 <td width="120">Nama</td>
                 <td width="15">:</td>
-                <td class="font-bold">{{ $kepegawaian->nama ?? '-' }}</td>
+                <td>{{ $kepegawaian->nama ?? '-' }}</td>
             </tr>
             <tr>
                 <td>Jabatan</td>
@@ -379,8 +386,116 @@ function angkaKeTerbilang($angka)
             <td style="width: 50%;"></td>
             <td style="width: 50%; padding-left: 60px;">
                 Yang membuat pernyataan<br><br><br><br><br><br>
-                <strong>{{ $kepegawaian->nama ?? '-' }}</strong><br>
+                {{ $kepegawaian->nama ?? '-' }}<br>
                 NIP. {{ $kepegawaian->nip ?? '-' }}
+            </td>
+        </tr>
+    </table>
+
+
+    <div class="page-break"></div>
+    
+    <div style="text-align: right; font-size: 8pt; line-height: 1.2;">
+        LAMPIRAN III<br>
+        PERATURAN DIREKTUR JENDERAL PERBENDAHARAAN NOMOR<br>
+        PER-22/PB/2013 TENTANG KETENTUAN LEBIH LANJUT<br>
+        PELAKSANAAN PERJALANAN DINAS DALAM NEGERI BAGI PEJABAT<br>
+        NEGARA, PEGAWAI NEGERI, DAN PEJABAT TIDAK TETAP.
+    </div>
+
+    <table style="margin: 20px 0;">
+        <tr>
+            <td style="width: 60%; font-weight: bold; font-size: 11pt; line-height: 1.2;">
+                KEMENTERIAN PENDIDIKAN DASAR DAN MENENGAH<br>
+                BALAI PENJAMINAN MUTU PENDIDIKAN (BPMP)<br>
+                PROVINSI KEPULAUAN RIAU
+            </td>
+            <td style="width: 40%;">
+                <table style="font-size: 10pt;">
+                    <tr><td width="80">Lembar Ke</td><td>: 1</td></tr>
+                    <tr><td>Kode No.</td><td>: -</td></tr>
+                    <tr><td>Nomor</td><td>: {{ $nomor_surat_surat_tugas ?? '-' }}</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title" style="text-decoration: none; margin-bottom: 20px;"><u>SURAT PERJALANAN DINAS (SPD)</u></div>
+
+    <table class="table-border">
+        <tr>
+            <td class="text-center" style="width: 4%;">1</td>
+            <td style="width: 38%;">Pejabat Pembuat Komitmen</td>
+            <td style="width: 58%;">{{ $pejabat['ppk_nama'] }}<br>NIP. {{ $pejabat['ppk_nip'] }}</td>
+        </tr>
+        <tr>
+            <td class="text-center">2</td>
+            <td>Nama/NIP Pegawai yang melaksanakan Perjalanan Dinas</td>
+            <td>{{ $kepegawaian->nama ?? '-' }}<br>NIP. {{ $kepegawaian->nip ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td class="text-center">3</td>
+            <td>a. Pangkat dan Golongan<br>b. Jabatan/Instansi<br>c. Tingkat Biaya Perjalanan Dinas</td>
+            <td>a. {{ $kepegawaian->pangkat->nama ?? '-' }}, {{ $kepegawaian->pangkat->golongan ?? '-' }}<br>b. {{ $kepegawaian->jabatan ?? '-' }} – BPMP Provinsi Kepulauan Riau<br>c. C</td>
+        </tr>
+        <tr>
+            <td class="text-center">4</td>
+            <td>Maksud Perjalanan Dinas</td>
+            <td style="text-align: justify;">{{ $maksud_perjalanan_dinas ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td class="text-center">5</td>
+            <td>Alat angkutan yang dipergunakan</td>
+            <td style="text-align: justify;">{{ $alat_angkut ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td class="text-center">6</td>
+            <td>a. Tempat berangkat<br><br>b. Tempat tujuan</td>
+            <td>a. {{ $tempat_berangkat ?? '-' }}<br><br>b. {{ $tempat_tujuan ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td class="text-center">7</td>
+            <td>a. Lamanya Perjalanan Dinas<br><br>b. Tanggal berangkat<br><br>c. Tanggal harus kembali/tiba di tempat baru</td>
+            <td>
+                a. @if($start && $end) {{ $start->diffInDays($end) + 1 }} @else - @endif hari<br><br>
+                b. {{ $start ? $start->isoFormat('D MMMM YYYY') : '-' }}<br><br>
+                c. {{ $end ? $end->isoFormat('D MMMM YYYY') : '-' }}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">8</td>
+            <td>Pengikut : &nbsp;&nbsp;&nbsp; NAMA</td>
+            <td>Tanggal Lahir &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Keterangan</td>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td>1. dst</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="text-center">9</td>
+            <td>Pembebanan Anggaran<br>a. Instansi<br><br>b. Akun</td>
+            <td><br>a. Balai Penjaminan Mutu Pendidikan (BPMP) Provinsi Kepulauan Riau<br><br>b. </td>
+        </tr>
+        <tr>
+            <td class="text-center">10</td>
+            <td>Keterangan lain-lain</td>
+            <td></td>
+        </tr>
+    </table>
+
+    <table class="ttd-table" style="margin-top: 25px;">
+        <tr>
+            <td style="width: 55%;"></td>
+            <td style="width: 45%;">
+                <table style="width: 100%;">
+                    <tr><td width="100">Dikeluarkan di</td><td>: Bintan</td></tr>
+                    <tr><td>Tanggal</td><td>: {{ $tanggal_kwitansi ? \Carbon\Carbon::parse($tanggal_kwitansi)->isoFormat('D MMMM YYYY') : '-' }}</td></tr>
+                </table>
+                <br>
+                Pejabat Pembuat Komitmen<br><br><br><br>
+                <strong><u>{{ $pejabat['ppk_nama'] }}</u></strong><br>
+                NIP. {{ $pejabat['ppk_nip'] }}
             </td>
         </tr>
     </table>

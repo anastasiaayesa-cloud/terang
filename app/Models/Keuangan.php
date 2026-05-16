@@ -21,6 +21,10 @@ class Keuangan extends Model
         'uang_dibayarkan',
         'bukti_pengeluaran_id',
         'tanggal_kwitansi',
+        'maksud_perjalanan_dinas',
+        'alat_angkut',
+        'tempat_berangkat',
+        'tempat_tujuan',
     ];
 
     // Pastikan casts hanya untuk angka

@@ -52,6 +52,7 @@ class KeuanganPreviewController extends Controller
                 'nominal' => $bukti->nominal,
                 'jumlah' => 1,
                 'uang_dibayarkan' => $bukti->keuangan?->uang_dibayarkan,
+                'tipe' => 'bukti',
             ]);
         }
 
@@ -62,6 +63,7 @@ class KeuanganPreviewController extends Controller
                 'nominal' => $manual->nominal,
                 'jumlah' => $manual->jumlah,
                 'uang_dibayarkan' => $manual->uang_dibayarkan,
+                'tipe' => 'manual',
             ]);
         }
 
@@ -82,6 +84,10 @@ class KeuanganPreviewController extends Controller
             ->where('pegawai_id', $pegawai_id)
             ->first();
         $tanggal_kwitansi = $firstKeuangan?->tanggal_kwitansi;
+        $maksud_perjalanan_dinas = $firstKeuangan?->maksud_perjalanan_dinas;
+        $alat_angkut = $firstKeuangan?->alat_angkut;
+        $tempat_berangkat = $firstKeuangan?->tempat_berangkat;
+        $tempat_tujuan = $firstKeuangan?->tempat_tujuan;
 
         $data = compact(
             'usulan',
@@ -92,7 +98,11 @@ class KeuanganPreviewController extends Controller
             'nomor_surat',
             'tanggal_kwitansi',
             'nomor_surat_surat_tugas',
-            'tanggal_upload_surat_tugas'
+            'tanggal_upload_surat_tugas',
+            'maksud_perjalanan_dinas',
+            'alat_angkut',
+            'tempat_berangkat',
+            'tempat_tujuan'
         );
 
         $pdf = Pdf::loadView('livewire.keuangans.kwitansi-preview', $data);

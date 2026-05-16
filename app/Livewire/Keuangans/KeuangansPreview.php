@@ -24,6 +24,14 @@ class KeuangansPreview extends Component
 
     public $tanggal_kwitansi = '';
 
+    public $maksud_perjalanan_dinas = '';
+
+    public $alat_angkut = '';
+
+    public $tempat_berangkat = '';
+
+    public $tempat_tujuan = '';
+
     public $jenisOptions = [
         'Biaya Perjalanan Dinas',
         'Pengeluaran Rill',
@@ -91,6 +99,10 @@ class KeuangansPreview extends Component
             ->where('pegawai_id', $this->pegawai_id)
             ->first();
         $this->tanggal_kwitansi = $firstKeuangan?->tanggal_kwitansi ?? '';
+        $this->maksud_perjalanan_dinas = $firstKeuangan?->maksud_perjalanan_dinas ?? '';
+        $this->alat_angkut = $firstKeuangan?->alat_angkut ?? '';
+        $this->tempat_berangkat = $firstKeuangan?->tempat_berangkat ?? '';
+        $this->tempat_tujuan = $firstKeuangan?->tempat_tujuan ?? '';
 
         return $this->payments;
     }
@@ -139,6 +151,17 @@ class KeuangansPreview extends Component
                     $keuangan->save();
                 }
             }
+        }
+
+        $keuangans = Keuangan::where('usulan_id', $this->usulan_id)
+            ->where('pegawai_id', $this->pegawai_id)
+            ->get();
+        foreach ($keuangans as $keuangan) {
+            $keuangan->maksud_perjalanan_dinas = $this->maksud_perjalanan_dinas;
+            $keuangan->alat_angkut = $this->alat_angkut;
+            $keuangan->tempat_berangkat = $this->tempat_berangkat;
+            $keuangan->tempat_tujuan = $this->tempat_tujuan;
+            $keuangan->save();
         }
 
         session()->flash('success', 'Semua pembayaran berhasil diperbarui.');

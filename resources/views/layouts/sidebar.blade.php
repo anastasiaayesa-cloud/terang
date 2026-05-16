@@ -35,7 +35,7 @@
 
         <!-- Navigation Links -->
         <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-            <!-- Dashboard -->
+            <!-- Dashboard (accessible to all authenticated users) -->
             <a href="{{ route('dashboard') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,6 +44,7 @@
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Dashboard</span>
             </a>
 
+            @can('dokumen-perencanaan.view')
             <!-- Dokumen Perencanaan -->
             <a href="{{ route('dokumen-perencanaans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('dokumen-perencanaans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -52,7 +53,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Dokumen Perencanaan</span>
             </a>
+            @endcan
 
+            @can('usulan.view')
             <!-- Usulan -->
             <a href="{{ route('usulans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('usulans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -61,7 +64,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Usulan</span>
             </a>
+            @endcan
 
+            @can('perencanaan.view')
             <!-- Perencanaan -->
             <a href="{{ route('perencanaans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('perencanaans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -70,7 +75,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Perencanaan</span>
             </a>
+            @endcan
 
+            @can('daftar-kegiatans.view')
             <!-- Daftar Kegiatan -->
             <a href="{{ route('daftar-kegiatans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('daftar-kegiatans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -79,7 +86,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Daftar Kegiatan</span>
             </a>
+            @endcan
 
+            @can('usulan-pegawai.view')
             <!-- Usulan Pegawai -->
             <a href="{{ route('usulan-pegawais.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('usulan-pegawais.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -88,7 +97,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Usulan Pegawai</span>
             </a>
+            @endcan
 
+            @can('persuratan.view')
             <!-- Persuratan -->
             <a href="{{ route('persuratans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('persuratans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -97,7 +108,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Persuratan</span>
             </a>
+            @endcan
 
+            @can('laporan-kegiatans.view')
             <!-- Laporan Kegiatan -->
             <a href="{{ route('laporan-kegiatans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('laporan-kegiatans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -106,7 +119,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Laporan Kegiatan</span>
             </a>
+            @endcan
 
+            @can('bukti-pengeluaran.view')
             <!-- Bukti Pengeluaran -->
             <a href="{{ route('bukti-pengeluarans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('bukti-pengeluarans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -115,7 +130,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Bukti Pengeluaran</span>
             </a>
+            @endcan
 
+            @can('usulan-pembayaran.view')
             <!-- Usulan Pembayaran -->
             <a href="{{ route('usulan-pembayarans.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('usulan-pembayarans.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -124,7 +141,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Usulan Pembayaran</span>
             </a>
+            @endcan
 
+            @can('keuangan.view')
             <!-- Keuangan -->
             <a href="{{ route('keuangans.index') }}" 
                 class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('keuangans.*') ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -141,7 +160,9 @@
                     Keuangan
                 </span>
             </a>
+            @endcan
 
+            @can('kepegawaian.view')
             <!-- Kepegawaian -->
             <a href="{{ route('kepegawaians.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('kepegawaians.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -150,7 +171,9 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Kepegawaian</span>
             </a>
+            @endcan
 
+            @can('instansi.view')
             <!-- Instansi -->
             <a href="{{ route('instansis.index') }}" 
                class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('instansis.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
@@ -159,6 +182,7 @@
                 </svg>
                 <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Instansi</span>
             </a>
+            @endcan
         </nav>
 
         <!-- User Profile -->
@@ -177,13 +201,33 @@
 
             <!-- Profile & Logout -->
             <div x-show="!collapsed" class="mt-3 space-y-1 transition-opacity duration-300">
-                <a href="{{ route('profile.edit') }}" 
-                   class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                    <svg class="h-4 w-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Profile
-                </a>
+                @can('role-management.view')
+                <!-- Manajemen Role & Permission -->
+            <a href="{{ route('admin.role-manager') }}" 
+               class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('admin.role-manager') ? 'bg-purple-50 text-purple-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Manajemen Role</span>
+            </a>
+
+            <!-- Manajemen Akses -->
+            <a href="{{ route('admin.manajemen-akses') }}" 
+               class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('admin.manajemen-akses') ? 'bg-purple-50 text-purple-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span x-show="!collapsed" class="ml-3 transition-opacity duration-300 whitespace-nowrap">Manajemen Akses</span>
+            </a>
+                @endcan
+
+            <a href="{{ route('profile.edit') }}" 
+               class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+                <svg class="h-4 w-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Profile
+            </a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

@@ -196,5 +196,48 @@
                 </tfoot>
             </table>
         </div>
+
+        <!-- Informasi Perjalanan Dinas -->
+        <div class="p-4 border-t bg-gray-50">
+            <h4 class="text-sm font-semibold text-gray-700 mb-3">📝 Informasi Perjalanan Dinas</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Maksud Perjalanan Dinas</label>
+                    <input 
+                        type="text" 
+                        wire:model="maksud_perjalanan_dinas"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Contoh: Rapat Koordinasi"
+                    >
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Alat Angkutan yang Digunakan</label>
+                    <input 
+                        type="text" 
+                        wire:model="alat_angkut"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Contoh: Pesawat, Mobil"
+                    >
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Tempat Berangkat</label>
+                    <input 
+                        type="text" 
+                        wire:model="tempat_berangkat"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Contoh: Tanjungpinang"
+                    >
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Tempat Tujuan</label>
+                    <input 
+                        type="text" 
+                        wire:model="tempat_tujuan"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Contoh: Jakarta"
+                    >
+                </div>
+            </div>
+        </div>
     </div>
 </div>
