@@ -89,6 +89,7 @@ class KeuangansPreview extends Component
                 'nominal' => $manual->nominal,
                 'uang_dibayarkan' => $manual->uang_dibayarkan,
                 'jumlah' => $manual->jumlah,
+                'satuan' => $manual->satuan,
                 'status' => $manual->status,
             ]);
         }

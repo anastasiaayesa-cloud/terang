@@ -145,12 +145,12 @@ function angkaKeTerbilang($angka)
                     <td class="text-center">{{ $no++ }}</td>
                     <td>
                         {{ $payment['perincian_bayar'] ?? '-' }}
-                        @if(($payment['tipe'] ?? 'bukti') === 'manual')
+                        @if(($payment['satuan'] ?? '') || $payment['bukti_pengeluaran_id'] === null)
                             <div style="margin-top: 4px; display: flex; justify-content: space-between; font-size: 9pt;">
                                 <div class="currency-flex" style="width: 45%;">
                                     <span>Rp.</span><span>{{ number_format($price, 2, ',', '.') }}</span>
                                 </div>
-                                <div style="width: 45%; text-align: right;">X {{ $qty }}</div>
+                                <div style="width: 45%; text-align: right;">X {{ $qty }} {{ $payment['satuan'] ?? '' }}</div>
                             </div>
                         @endif
                     </td>

@@ -51,8 +51,10 @@ class KeuanganPreviewController extends Controller
                 'jenis' => $bukti->keuangan?->jenis ?? 'Biaya Perjalanan Dinas',
                 'nominal' => $bukti->nominal,
                 'jumlah' => 1,
+                'satuan' => $bukti->keuangan?->satuan ?? null,
                 'uang_dibayarkan' => $bukti->keuangan?->uang_dibayarkan,
                 'tipe' => 'bukti',
+                'bukti_pengeluaran_id' => $bukti->id,
             ]);
         }
 
@@ -62,8 +64,10 @@ class KeuanganPreviewController extends Controller
                 'jenis' => $manual->jenis,
                 'nominal' => $manual->nominal,
                 'jumlah' => $manual->jumlah,
+                'satuan' => $manual->satuan,
                 'uang_dibayarkan' => $manual->uang_dibayarkan,
                 'tipe' => 'manual',
+                'bukti_pengeluaran_id' => $manual->bukti_pengeluaran_id,
             ]);
         }
 

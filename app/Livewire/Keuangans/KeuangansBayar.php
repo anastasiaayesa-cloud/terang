@@ -44,6 +44,8 @@ class KeuangansBayar extends Component
 
     public $manualJenis = 'Biaya Perjalanan Dinas';
 
+    public $manualSatuan = '';
+
     public function mount($usulan_id, $pegawai_id)
     {
         $this->usulan_id = $usulan_id;
@@ -133,6 +135,7 @@ class KeuangansBayar extends Component
         $this->manualPerincian = '';
         $this->manualNominal = '';
         $this->manualJumlah = 1;
+        $this->manualSatuan = '';
         $this->manualJenis = 'Biaya Perjalanan Dinas';
     }
 
@@ -147,6 +150,7 @@ class KeuangansBayar extends Component
             'manualPerincian' => 'required|string',
             'manualNominal' => 'required|numeric|min:0',
             'manualJumlah' => 'required|integer|min:1',
+            'manualSatuan' => 'nullable|in:kali,hr',
         ]);
 
         $nominalManual = (float) $this->manualNominal;
@@ -160,6 +164,7 @@ class KeuangansBayar extends Component
             'perincian_bayar' => $this->manualPerincian,
             'nominal' => $nominalManual,
             'jumlah' => $jumlahManual,
+            'satuan' => $this->manualSatuan ?: null,
             'total' => $totalManual,
             'uang_dibayarkan' => $totalManual,
             'jenis' => $this->manualJenis,

@@ -40,7 +40,7 @@ Route::view('/', 'welcome');
 Route::middleware(['auth'])->group(function () {
 
     // Dashboard & Profile
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', \App\Livewire\Dashboard::class)->name('dashboard');
     Route::view('profile', 'profile.edit')->name('profile.edit');
 
     /*

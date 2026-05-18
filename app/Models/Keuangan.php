@@ -14,6 +14,7 @@ class Keuangan extends Model
         'perincian_bayar',
         'nominal',
         'jumlah',
+        'satuan',
         'total',
         'jenis',
         'status',
@@ -25,13 +26,14 @@ class Keuangan extends Model
         'alat_angkut',
         'tempat_berangkat',
         'tempat_tujuan',
+        'selesai_at',
     ];
 
-    // Pastikan casts hanya untuk angka
     protected $casts = [
         'nominal' => 'decimal:2',
         'total' => 'decimal:2',
         'jumlah' => 'integer',
+        'selesai_at' => 'datetime',
     ];
 
     public function usulan()

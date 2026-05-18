@@ -2,11 +2,10 @@
 
 namespace App\Livewire\Keuangans;
 
+use App\Models\Keuangan;
 use App\Models\Usulan;
 use Livewire\Component;
 use Livewire\WithPagination;
-
-// app/Livewire/Keuangans/KeuangansIndex.php
 
 class KeuangansIndex extends Component
 {
@@ -14,9 +13,8 @@ class KeuangansIndex extends Component
 
     public $search = '';
 
-    public $expandedRows = []; // ⭐ Tambahkan - tracking baris yang terbuka
+    public $expandedRows = [];
 
-    // Method untuk toggle expand
     public function toggleRow($usulanId)
     {
         if (isset($this->expandedRows[$usulanId])) {
@@ -26,15 +24,29 @@ class KeuangansIndex extends Component
         }
     }
 
+    public function selesai($usulanId, $pegawaiId)
+    {
+        Keuangan::where('usulan_id', $usulanId)
+            ->where('pegawai_id', $pegawaiId)
+            ->update(['selesai_at' => now()]);
+    }
+
+    public function batalSelesai($usulanId, $pegawaiId)
+    {
+        Keuangan::where('usulan_id', $usulanId)
+            ->where('pegawai_id', $pegawaiId)
+            ->update(['selesai_at' => null]);
+    }
+
     public function render()
     {
-        $usulans = Usulan::whereHas('usulanPegawais', function ($q) {
-            $q->where('status', 'approved');
-        })
+$usulans = Usulan::whereHas('usulanPegawais', function ($q) {
+                $q->where('status', 'approved');
+            })
             ->where('nama_kegiatan', 'like', '%'.$this->search.'%')
             ->with(['usulanPegawais' => function ($q) {
                 $q->where('status', 'approved')
-                    ->with(['kepegawaian', 'kepegawaian.pangkat']);
+                    ->with(['kepegawaian', 'kepegawaian.pangkat', 'keuangans']);
             }])
             ->withCount(['usulanPegawais' => function ($q) {
                 $q->where('status', 'approved');

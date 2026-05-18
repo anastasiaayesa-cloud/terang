@@ -61,4 +61,11 @@ class UsulanPegawai extends Model
         // Pastikan foreign key-nya benar, misal 'perencanaan_id'
         return $this->belongsTo(Perencanaan::class, 'perencanaan_id'); 
     }
+
+    public function keuangans()
+    {
+        // Relasi ke model Keuangan berdasarkan foreign key 'usulan_id'
+        // Jika satu UsulanPegawai terhubung ke banyak catatan Keuangan via usulan_id
+        return $this->hasMany(Keuangan::class, 'usulan_id', 'usulan_id');
+    }
 }

@@ -1,4 +1,10 @@
 <div class="p-6">
+    @if (session('success'))
+        <div class="mb-4 p-4 bg-green-50 text-green-700 rounded border border-green-200">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800">Daftar Pengajuan Pencairan Dana</h2>
         <a href="{{ route('keuangans.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition">
@@ -14,7 +20,7 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kegiatan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Kegiatan</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tempat</th>
                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -29,7 +35,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="text-sm text-gray-700">
-                            {{ \Carbon\Carbon::parse($usulan->tanggal_kegiatanaan)->format('d M') }} - 
+                            {{ \Carbon\Carbon::parse($usulan->tanggal_kegiatan)->format('d M') }} - 
                             {{ \Carbon\Carbon::parse($usulan->sampai_tanggal)->format('d M Y') }}
                         </div>
                     </td>
@@ -48,14 +54,14 @@
                 @if(isset($expandedRows[$usulan->id]))
                     <tr class="bg-blue-50">
                         <td colspan="6" class="px-6 py-4">
-                            <!-- Tabel Detail -->
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-blue-100">
                                     <tr>
                                         <th class="px-4 py-2 text-left text-xs font-bold text-blue-800">Nama Pegawai</th>
                                         <th class="px-4 py-2 text-left text-xs font-bold text-blue-800">NIP</th>
                                         <th class="px-4 py-2 text-left text-xs font-bold text-blue-800">Jabatan</th>
-                                        <th class="px-4 py-2 text-center text-xs font-bold text-blue-800">Status</th>
+                                        <th class="px-4 py-2 text-left text-xs font-bold text-blue-800">Status Bayar</th>
+                                        <th class="px-4 py-2 text-left text-xs font-bold text-blue-800">Status Selesai</th>
                                         <th class="px-4 py-2 text-center text-xs font-bold text-blue-800">Aksi</th>
                                     </tr>
                                 </thead>
@@ -71,14 +77,54 @@
                                             </span>
                                         </td>
                                         <td class="px-4 py-3 text-center">
-                                            <a href="{{ route('keuangans.bayar', ['usulan_id' => $usulan->id, 'pegawai_id' => $pegawai->pegawai_id]) }}" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs inline-block">
+                                            @php
+                                                // FILTER: Hanya ambil data keuangan yang usulan_id DAN pegawai_id-nya cocok dengan pegawai ini
+                                                $keuangans = $pegawai->keuangans->where('pegawai_id', $pegawai->pegawai_id);
+                                                
+                                                $adaKeuangan = $keuangans->count() > 0;
+                                                $semuaSelesai = $adaKeuangan && $keuangans->every(fn($k) => $k->selesai_at !== null);
+                                            @endphp
+                                            @if($semuaSelesai)
+                                                <span class="inline-block px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
+                                                    Selesai
+                                                </span>
+                                            @elseif($adaKeuangan)
+                                                <span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">
+                                                    Belum
+                                                </span>
+                                            @else
+                                                <span class="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                                                    -
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            @if($pegawai->keuangans->count() > 0)
+                                                @if($semuaSelesai)
+                                                    <button 
+                                                        wire:click="batalSelesai({{ $pegawai->keuangans->first()->id }})"
+                                                        class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs inline-block"
+                                                    >
+                                                        Batal Selesai
+                                                    </button>
+                                                @else
+                                                    <button 
+                                                        wire:click="selesai({{ $usulan->id }}, {{ $pegawai->pegawai_id }})"
+                                                        class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs inline-block"
+                                                    >
+                                                        Selesai
+                                                    </button>
+                                                @endif
+                                                <span class="mx-1">|</span>
+                                            @endif
+                                            <a href="{{ route('keuangans.bayar', ['usulan_id' => $usulan->id, 'pegawai_id' => $pegawai->pegawai_id]) }}" class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs inline-block">
                                                 Bayar
                                             </a>
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="5" class="px-4 py-3 text-sm text-gray-500 text-center">
+                                        <td colspan="6" class="px-4 py-3 text-sm text-gray-500 text-center">
                                             Tidak ada pegawai yang di-approve
                                         </td>
                                     </tr>
@@ -96,7 +142,7 @@
                 </tr>
                 @endforelse
             </tbody>
-                
+            
         </table>
     </div>
 

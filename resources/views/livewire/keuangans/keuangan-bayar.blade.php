@@ -274,6 +274,18 @@
                     >
                     @error('manualJumlah') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Satuan</label>
+                    <select 
+                        wire:model="manualSatuan"
+                        class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option value="">Pilih...</option>
+                        <option value="kali">kali</option>
+                        <option value="hr">hr</option>
+                    </select>
+                    @error('manualSatuan') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
                 <div class="mb-4 bg-gray-50 p-3 rounded">
                     <div class="flex justify-between items-center">
                         <span class="text-sm font-medium text-gray-700">Total:</span>

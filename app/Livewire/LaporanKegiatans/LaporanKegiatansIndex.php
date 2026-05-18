@@ -2,10 +2,11 @@
 
 namespace App\Livewire\LaporanKegiatans;
 
-use App\Models\LaporanKegiatan;
+use App\Models\LaporanKEGIATAN;
+use App\Models\Usulan;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\UsulanPegawai;
 
 class LaporanKegiatansIndex extends Component
 {
@@ -14,6 +15,8 @@ class LaporanKegiatansIndex extends Component
     public $search = '';
 
     public $filterStatus = '';
+
+    public $hasKepegawaian = false;
 
     protected $paginationTheme = 'tailwind';
 
@@ -29,9 +32,8 @@ class LaporanKegiatansIndex extends Component
 
     public function approve($id)
     {
-        // Cari berdasarkan ID di tabel laporan_kegiatans
-        $laporan = LaporanKegiatan::find($id);
-    
+        $laporan = LaporanKEGIATAN::find($id);
+
         if ($laporan) {
             $laporan->update(['status' => 'approved']);
             session()->flash('success', 'Laporan berhasil disetujui.');
@@ -42,14 +44,14 @@ class LaporanKegiatansIndex extends Component
 
     public function reject($id)
     {
-        $laporan = LaporanKegiatan::findOrFail($id);
+        $laporan = LaporanKEGIATAN::findOrFail($id);
         $laporan->update(['status' => 'rejected']);
         session()->flash('success', 'Laporan berhasil ditolak.');
     }
 
     public function delete($id)
     {
-        $laporan = LaporanKegiatan::findOrFail($id);
+        $laporan = LaporanKEGIATAN::findOrFail($id);
         if ($laporan->file_laporan && \Storage::disk('public')->exists($laporan->file_laporan)) {
             \Storage::disk('public')->delete($laporan->file_laporan);
         }
@@ -57,22 +59,54 @@ class LaporanKegiatansIndex extends Component
         session()->flash('success', 'Laporan berhasil dihapus.');
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return Auth::user()?->hasRole('Super Admin');
+    }
+
+    public function getCurrentKepegawaianId(): ?int
+    {
+        $kepegawaianId = Auth::user()?->kepegawaian?->id;
+        $this->hasKepegawaian = $kepegawaianId !== null;
+
+        return $kepegawaianId;
+    }
+
     public function render()
     {
-        $approvedUsulanPegawai = UsulanPegawai::query()
-            ->where('status', 'approved')
-            ->with(['kepegawaian', 'usulan'])
-            ->paginate(10);
+        $query = Usulan::query()
+            ->whereHas('usulanPegawais', function ($q) {
+                $q->where('status', 'approved');
+            })
+            ->with(['usulanPegawais.kepegawaian']);
 
-        // Pastikan file_laporan dipetakan di sini
-        $laporanMap = LaporanKegiatan::all()->mapWithKeys(function ($item) {
-            return [$item->usulan_id . '-' . $item->pegawai_id => [
+        if (! $this->isSuperAdmin()) {
+            $kepegawaianId = $this->getCurrentKepegawaianId();
+            if (! $this->hasKepegawaian) {
+                $query->whereRaw('1 = 0');
+            } else {
+                $query->whereHas('usulanPegawais', function ($q) use ($kepegawaianId) {
+                    $q->where('pegawai_id', $kepegawaianId);
+                });
+            }
+        }
+
+        if ($this->search) {
+            $query->where('nama_kegiatan', 'like', '%'.$this->search.'%');
+        }
+
+        $activities = $query->paginate(10);
+
+        $laporanMap = LaporanKEGIATAN::all()->mapWithKeys(function ($item) {
+            return [$item->usulan_id.'-'.$item->pegawai_id => [
                 'id' => $item->id,
                 'status' => $item->status,
-                'file_laporan' => $item->file_laporan, 
+                'file_laporan' => $item->file_laporan,
             ]];
         })->toArray();
 
-        return view('livewire.laporan-kegiatans.laporan-kegiatans-index', compact('approvedUsulanPegawai', 'laporanMap'));
+        $isSuperAdmin = $this->isSuperAdmin();
+
+        return view('livewire.laporan-kegiatans.laporan-kegiatans-index', compact('activities', 'laporanMap', 'isSuperAdmin'));
     }
 }
